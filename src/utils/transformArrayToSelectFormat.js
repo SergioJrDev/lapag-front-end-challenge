@@ -1,6 +1,6 @@
-const transformResponseToSelectFormat = (options) => {
+const transformResponseToSelectFormat = (options, value, label) => {
   const transformedValues = []
-  options.map(option => transformedValues.push({value: option._id, label: option.name}))
+  options.map(option => transformedValues.push({value: option[value], label: option[label]}))
   return transformedValues
 }
 

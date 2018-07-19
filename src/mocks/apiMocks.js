@@ -14,6 +14,23 @@ export const returnServices = () =>
     }, 200);
   });
 
+export const returnServicesByProfessional = (professional_document) =>
+  new Promise((resolve, reject) => {
+    setTimeout(function() {
+      if(!professional_document) {
+        return reject('CPF não informado.')
+      }
+
+      const servicesFiltered = []
+      servicesMocks.map(service => {
+        const hasServices = service.available_professionals.filter(({cpf}) => cpf === professional_document)
+        hasServices.length > 0 && servicesFiltered.push(service)
+      })
+
+      resolve(servicesFiltered);
+    }, 200);
+  });
+
 export const returnClients = () => {
   return new Promise((resolve) => {
     setTimeout(() => {

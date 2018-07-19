@@ -1,31 +1,42 @@
 import React, { Component } from 'react'
 import { PageWrapper, SelectWithFilter, InputWrapper } from './../../components'
 import { transformResponseToSelectFormat } from './../../utils'
-import { returnClients } from './../../mocks/apiMocks'
+import { returnClients, returnProfessionals, returnServicesByProfessional } from './../../mocks/apiMocks'
 import './style.css'
 
 class CriarAgendamento extends Component {
   state = {
     cliente: '',
+    funcionario: '',
     clientOptions: [],
+    funcionariosOptions: [],
   }
 
   componentDidMount = () => {
     returnClients()
-      .then(transformResponseToSelectFormat)
+      .then(response => transformResponseToSelectFormat(response, '_id', 'name'))
       .then(response => this.setState({clientOptions: response}))
-  }
 
-  handleChange = (selectedOption) => {
-    console.log(selectedOption)
+    returnProfessionals()
+      .then(response => transformResponseToSelectFormat(response, 'document_number', 'name'))
+      .then(response => this.setState({funcionariosOptions: response}))
+
+      returnServicesByProfessional('97976183079')
+        .then(response => console.log('res', response))
+        .catch(err => console.log('err', err))
   }
 
   onSelectClienteHandler = (selected) => {
     this.setState({cliente: selected})
   }
 
+  onSelectProfessionalHandler = (selected) => {
+    console.log('func', selected)
+    this.setState({funcionario: selected})
+  }
+
   render() {
-    const { cliente, clientOptions } = this.state
+    const { cliente, funcionario, clientOptions, funcionariosOptions } = this.state
 
     return(
       <PageWrapper>
@@ -36,6 +47,14 @@ class CriarAgendamento extends Component {
               selected={cliente}
               onSelectHandler={this.onSelectClienteHandler}
               options={clientOptions} />
+          } />
+
+          <InputWrapper label="Pesquise por um funcionário" id="funcionario" input={() =>
+            <SelectWithFilter
+              placeholder=""
+              selected={funcionario}
+              onSelectHandler={this.onSelectProfessionalHandler}
+              options={funcionariosOptions} />
           } />
         </form>
       </PageWrapper>
