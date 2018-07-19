@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import logo from "./logo-white.png";
+import { DatePicker } from './components'
 import "./App.css";
 
 class App extends Component {
@@ -11,6 +12,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
         </div>
         <p className="App-intro">Start the test here!</p>
+        <DatePicker />
       </div>
     );
   }
