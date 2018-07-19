@@ -1,12 +1,13 @@
 import React from 'react'
-import { SingleDatePicker } from 'react-dates'
 import moment from 'moment'
+import PropTypes from 'prop-types'
+import { SingleDatePicker } from 'react-dates'
 import { Button } from './../'
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import './DatePicker.css'
 
-export default class CalendarPicker extends React.Component {
+class CalendarPicker extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -25,7 +26,8 @@ export default class CalendarPicker extends React.Component {
     this.onDateChangeHandler(startDate.subtract(1, 'day'))
   }
 
-  onDateChangeHandler = (startDate) => this.setState({startDate})
+  onDateChangeHandler = (startDate) =>
+    this.setState({startDate}, () => this.props.onChangeHandler && this.props.onChangeHandler({startDate}))
 
   render() {
     const { startDate } = this.state
@@ -46,3 +48,10 @@ export default class CalendarPicker extends React.Component {
     )
   }
 }
+
+CalendarPicker.propTypes = {
+  onChangeHandler: PropTypes.func.isRequired,
+}
+
+
+export default CalendarPicker

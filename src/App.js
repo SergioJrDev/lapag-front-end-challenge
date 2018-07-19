@@ -12,7 +12,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
         </div>
         <p className="App-intro">Start the test here!</p>
-        <DatePicker />
+        <DatePicker onChangeHandler={() => {}} />
       </div>
     );
   }
