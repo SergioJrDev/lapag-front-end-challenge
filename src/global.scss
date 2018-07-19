@@ -1,0 +1,25 @@
+
+$theme-colors: (
+  'primary': #1EB1E8, 
+  'danger': #FF7162,
+  'theme': #D31EE8,
+  'secundary': #21FF83,
+  'primary-dark': #3D2EFF
+);
+
+@function pick-color($key: 'primary') {
+  @return map-get($theme-colors, $key);
+}
+
+button {
+  background: pick-color();
+  padding: 10px;
+  border: 0;
+  cursor: pointer;
+  color: #fff;
+  border-radius: 4px;
+  &:hover {
+    background: darken($color: pick-color(), $amount: 20%)
+  }
+}
+

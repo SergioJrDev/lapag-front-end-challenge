@@ -1,0 +1,36 @@
+@import 'global.scss';
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 30px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 60px;
+  padding: 1em;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

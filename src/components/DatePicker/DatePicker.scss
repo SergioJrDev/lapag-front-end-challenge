@@ -1,0 +1,9 @@
+.date_picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .SingleDatePickerInput {
+    overflow: hidden;
+    margin: 0 10px;
+  }
+}
