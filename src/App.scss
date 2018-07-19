@@ -1,8 +1,10 @@
 .App {
-  text-align: center; }
+  text-align: center;
+}
 
 .App-logo {
-  height: 30px; }
+  height: 30px;
+}
 
 .App-header {
   background-color: #222;
@@ -11,16 +13,22 @@
   color: white;
   display: flex;
   align-items: center;
-  justify-content: space-between; }
+  justify-content: space-between;
+}
 
 .App-title {
-  font-size: 1.5em; }
+  font-size: 1.5em;
+}
 
 .App-intro {
-  font-size: large; }
+  font-size: large;
+}
 
 @keyframes App-logo-spin {
   from {
-    transform: rotate(0deg); }
+    transform: rotate(0deg);
+  }
   to {
-    transform: rotate(360deg); } }
+    transform: rotate(360deg);
+  }
+}

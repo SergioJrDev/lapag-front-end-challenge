@@ -3,6 +3,7 @@ import { SingleDatePicker } from 'react-dates'
 import moment from 'moment'
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
+import './DatePicker'
 
 export default class CalendarPicker extends React.Component {
   constructor(props) {
@@ -16,7 +17,9 @@ export default class CalendarPicker extends React.Component {
   render() {
     const { startDate } = this.state
     return (
-      <SingleDatePicker
+      <div className="date_picker">
+        <button>Anterior</button>
+        <SingleDatePicker
         numberOfMonths={1}
         isOutsideRange={() => false}
         date={startDate}
@@ -24,7 +27,9 @@ export default class CalendarPicker extends React.Component {
         focused={this.state.focused}
         onFocusChange={({ focused }) => this.setState({ focused })}
         id="schedule" 
-      />
+        />
+        <button>Próximo</button>
+      </div>
     )
   }
 }
