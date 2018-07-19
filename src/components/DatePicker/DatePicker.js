@@ -23,7 +23,7 @@ export default class CalendarPicker extends React.Component {
         onDateChange={startDate => this.setState({ startDate })}
         focused={this.state.focused}
         onFocusChange={({ focused }) => this.setState({ focused })}
-        id="your_unique_id" 
+        id="schedule" 
       />
     )
   }
