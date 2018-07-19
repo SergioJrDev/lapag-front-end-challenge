@@ -16,12 +16,16 @@ export default class CalendarPicker extends React.Component {
   }
 
   nextScheduleDate = () => {
-    console.log('incre')
+    const { startDate }  = this.state
+    this.onDateChangeHandler(startDate.add(1, 'day'))
   }
 
   prevScheduleDate = () => {
-    console.log('dec')
+    const { startDate }  = this.state
+    this.onDateChangeHandler(startDate.subtract(1, 'day'))
   }
+
+  onDateChangeHandler = (startDate) => this.setState({startDate})
 
   render() {
     const { startDate } = this.state
@@ -32,7 +36,7 @@ export default class CalendarPicker extends React.Component {
         numberOfMonths={1}
         isOutsideRange={() => false}
         date={startDate}
-        onDateChange={startDate => this.setState({ startDate })}
+        onDateChange={this.onDateChangeHandler}
         focused={this.state.focused}
         onFocusChange={({ focused }) => this.setState({ focused })}
         id="schedule" 
