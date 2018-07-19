@@ -14,16 +14,10 @@ export const returnServices = () =>
     }, 200);
   });
 
-export const returnClients = clientName => {
-  if (!clientName) {
-    clientName = "";
-  }
-  const filteredClients = clientsMocks.filter(e =>
-    e.name.toUpperCase().includes(clientName.toUpperCase())
-  );
-  return new Promise(resolve => {
-    setTimeout(function() {
-      resolve(filteredClients);
-    }, 300);
-  });
+export const returnClients = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(clientsMocks)
+    }, 200);
+  })
 };
