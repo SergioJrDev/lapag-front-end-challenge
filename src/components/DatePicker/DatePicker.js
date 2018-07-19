@@ -3,7 +3,7 @@ import { SingleDatePicker } from 'react-dates'
 import moment from 'moment'
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
-import './DatePicker'
+import './DatePicker.css'
 
 export default class CalendarPicker extends React.Component {
   constructor(props) {
