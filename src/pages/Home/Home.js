@@ -7,6 +7,7 @@ class Home extends Component {
       <PageWrapper>
         <div>
           <DatePicker onChangeHandler={() => {}} />
+          <p>Quarta Feira</p>
         </div>
       </PageWrapper>
     )

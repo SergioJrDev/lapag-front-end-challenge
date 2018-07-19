@@ -27,7 +27,8 @@ class CalendarPicker extends React.Component {
   }
 
   onDateChangeHandler = (startDate) =>
-    this.setState({startDate}, () => this.props.onChangeHandler && this.props.onChangeHandler({startDate}))
+    this.setState({startDate}, () =>
+    this.props.onChangeHandler && this.props.onChangeHandler({startDate}))
 
   render() {
     const { startDate } = this.state

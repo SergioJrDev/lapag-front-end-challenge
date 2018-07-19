@@ -4,11 +4,17 @@ $theme-colors: (
   'danger': #FF7162,
   'theme': #D31EE8,
   'secundary': #21FF83,
-  'primary-dark': #3D2EFF
+  'primary-dark': #3D2EFF,
+  'text': #333,
 );
 
 @function pick-color($key: 'primary') {
   @return map-get($theme-colors, $key);
+}
+
+* {
+  margin: 0;
+  padding: 0;
 }
 
 button {
@@ -23,3 +29,7 @@ button {
   }
 }
 
+p {
+  color: pick-color('text');
+  line-height: 1.5;
+}
