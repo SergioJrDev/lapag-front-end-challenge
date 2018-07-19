@@ -4,7 +4,9 @@ const DefaultStore = {
   user: {
     name: 'Joffrey Lannister'
   },
-  currentScheduleDate: moment(),
+  scheduleDate: {
+    currentDate: moment(),
+  },
 }
 
 export default DefaultStore

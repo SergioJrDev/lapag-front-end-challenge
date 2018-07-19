@@ -1,0 +1,1 @@
+export { default as transformDateToDayOfWeek } from './transformDateToDayOfWeek'

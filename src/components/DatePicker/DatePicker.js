@@ -11,7 +11,7 @@ class CalendarPicker extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      startDate: moment(),
+      startDate: this.props.currentDate || moment(),
       focusedInput: 'startDate',
     }
   }
@@ -28,7 +28,7 @@ class CalendarPicker extends React.Component {
 
   onDateChangeHandler = (startDate) =>
     this.setState({startDate}, () =>
-    this.props.onChangeHandler && this.props.onChangeHandler({startDate}))
+    this.props.onChangeHandler && this.props.onChangeHandler(startDate))
 
   render() {
     const { startDate } = this.state

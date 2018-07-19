@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
 import { default as user } from './user'
-import { default as currentScheduleDate } from './currentScheduleDate'
+import { default as scheduleDate } from './scheduleDate'
 
 const rootReducer = combineReducers({
   user,
-  currentScheduleDate,
+  scheduleDate,
 })
 
 export default rootReducer
