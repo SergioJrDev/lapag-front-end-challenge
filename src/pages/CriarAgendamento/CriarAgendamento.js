@@ -49,7 +49,11 @@ const stateDefault = {
 }
 
 class CriarAgendamento extends Component {
-  state = {...stateDefault}
+  state = {
+    ...stateDefault,
+    model: { ...stateDefault.model, date: this.props.scheduleDate.currentDate },
+    view: { ...stateDefault.view, date: this.props.scheduleDate.currentDate },
+  }
 
   componentDidMount = () => {
     returnClients()
@@ -59,12 +63,6 @@ class CriarAgendamento extends Component {
     returnProfessionals()
       .then(response => transformResponseToSelectFormat(response, 'document_number', 'name'))
       .then(professionals =>  this.updateStateArray('view', professionals, 'professionals'))
-    
-    const date = _get(this, 'props.scheduleDate.currentDate', false)
-    this.setState({
-      model: { ...this.state.model, date},
-      view: { ...this.state.view, date}
-    })
   }
 
   // property: objeto principal no state
