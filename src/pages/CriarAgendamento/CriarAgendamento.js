@@ -74,12 +74,13 @@ class CriarAgendamento extends Component {
   // newProperties: novas propriedades
   // key: objeto que vai herdar propriedades
   // reset: deve resetar array
-  updateStateArray = (property, newProperties, key, reset = false) => {
+  // callback: função de callback
+  updateStateArray = (property, newProperties, key, reset = false, callback = () => {}) => {
     this.setState({
       [property]: {...this.state[property],
         [key]: reset ? newProperties : this.state[property][key].concat(newProperties)
       }
-    })
+    }, () => callback())
   }
 
   onSelectClienteHandler = ({value, label}) => {
@@ -89,7 +90,7 @@ class CriarAgendamento extends Component {
   updateClientModel = () => {
     const { client: { value }} = this.state.selected
     returnClientById(value)
-    .then(client => this.updateStateObject('model', {...client}, 'client'))
+      .then(client => this.updateStateObject('model', {...client}, 'client'))
   }
 
   onFocusChange = (focused) => {
@@ -104,7 +105,7 @@ class CriarAgendamento extends Component {
   updateServiceList = () => {
     const { professional: { value }} = this.state.selected
     returnServicesByProfessional(value)
-      .then(services =>  this.updateStateArray('view', services, 'services', true))
+      .then(services =>  this.updateStateArray('view', services, 'services', true, this.filterSelectedsServices))
   }
 
   updateServiceListAndProfessionalSelected = () => {
@@ -127,10 +128,16 @@ class CriarAgendamento extends Component {
     this.setState({view: { ...this.state.view, duration: value }})
   }
 
-  onCheckboxChangeHandler = (node, index) => {
+  onSelectServiceHandler = (node, index) => {
     const services = [...this.state.view.services].slice();
     services[index] = {...[...services][index], checked: node.target.checked}
-    this.updateStateArray('view', services, 'services', true)
+    this.updateStateArray('view', services, 'services', true, this.filterSelectedsServices)
+  }
+
+  filterSelectedsServices = () => {
+    const { services } = this.state.view
+    const servicesFiltered = services.filter(service => service.checked)
+    this.updateStateArray('model', servicesFiltered, 'services', true)
   }
 
   render() {
@@ -169,7 +176,7 @@ class CriarAgendamento extends Component {
               <input
                 name='name'
                 checked={service.checked}
-                onChange={element => this.onCheckboxChangeHandler(element, index)}
+                onChange={element => this.onSelectServiceHandler(element, index)}
                 value={service.name}
                 type="checkbox" />
             } />
