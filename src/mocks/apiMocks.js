@@ -14,16 +14,28 @@ export const returnServices = () =>
     }, 200);
   });
 
-export const returnClients = clientName => {
-  if (!clientName) {
-    clientName = "";
-  }
-  const filteredClients = clientsMocks.filter(e =>
-    e.name.toUpperCase().includes(clientName.toUpperCase())
-  );
-  return new Promise(resolve => {
+export const returnServicesByProfessional = (professional_document) =>
+  new Promise((resolve, reject) => {
     setTimeout(function() {
-      resolve(filteredClients);
-    }, 300);
+      if(!professional_document) {
+        return reject('CPF não informado.')
+      }
+
+      const servicesFiltered = []
+      servicesMocks.map(service => {
+        const hasServices = service.available_professionals.filter(({cpf}) => cpf === professional_document)
+        hasServices.length > 0 && servicesFiltered.push(service)
+        return true
+      })
+
+      resolve(servicesFiltered);
+    }, 200);
   });
+
+export const returnClients = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(clientsMocks)
+    }, 200);
+  })
 };
