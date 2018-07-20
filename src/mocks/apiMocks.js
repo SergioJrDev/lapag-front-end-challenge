@@ -25,6 +25,7 @@ export const returnServicesByProfessional = (professional_document) =>
       servicesMocks.map(service => {
         const hasServices = service.available_professionals.filter(({cpf}) => cpf === professional_document)
         hasServices.length > 0 && servicesFiltered.push(service)
+        return true
       })
 
       resolve(servicesFiltered);

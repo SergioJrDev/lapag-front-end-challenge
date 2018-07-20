@@ -10,6 +10,8 @@ class CriarAgendamento extends Component {
     funcionario: '',
     clientOptions: [],
     funcionariosOptions: [],
+    services: [],
+    servicesSelected: [],
   }
 
   componentDidMount = () => {
@@ -20,23 +22,30 @@ class CriarAgendamento extends Component {
     returnProfessionals()
       .then(response => transformResponseToSelectFormat(response, 'document_number', 'name'))
       .then(response => this.setState({funcionariosOptions: response}))
-
-      returnServicesByProfessional('97976183079')
-        .then(response => console.log('res', response))
-        .catch(err => console.log('err', err))
   }
 
   onSelectClienteHandler = (selected) => {
     this.setState({cliente: selected})
   }
 
+  updateServiceList = () => {
+    const { funcionario: { value }} = this.state
+    returnServicesByProfessional(value)
+      .then(services => this.setState({services}))
+  }
+
   onSelectProfessionalHandler = (selected) => {
-    console.log('func', selected)
-    this.setState({funcionario: selected})
+    this.setState({funcionario: selected, services: []}, this.updateServiceList)
+  }
+
+  onCheckboxChangeHandler = (node, index) => {
+    const services = [...this.state.services].slice();
+    services[index] = {...[...services][index], checked: node.target.checked}
+    this.setState({services})
   }
 
   render() {
-    const { cliente, funcionario, clientOptions, funcionariosOptions } = this.state
+    const { cliente, funcionario, clientOptions, funcionariosOptions, services } = this.state
 
     return(
       <PageWrapper>
@@ -56,6 +65,17 @@ class CriarAgendamento extends Component {
               onSelectHandler={this.onSelectProfessionalHandler}
               options={funcionariosOptions} />
           } />
+
+          {services.map((service, index) => (
+            <InputWrapper key={index} label={service.name} id="funcionario" input={() =>
+              <input
+                name='name'
+                checked={service.checked}
+                onChange={element => this.onCheckboxChangeHandler(element, index)}
+                value={service.name}
+                type="checkbox" />
+            } />
+          ))}
         </form>
       </PageWrapper>
     )
