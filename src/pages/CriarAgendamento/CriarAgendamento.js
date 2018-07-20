@@ -161,6 +161,7 @@ class CriarAgendamento extends Component {
 
   onSubmitHandler = (event) => {
     console.log(JSON.stringify(this.state.model, null, 2))
+    this.setState({...stateDefault})
     event.preventDefault()
     return false
   }
