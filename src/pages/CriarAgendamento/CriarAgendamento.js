@@ -1,39 +1,62 @@
 import React, { Component } from 'react'
-import { PageWrapper, SelectWithFilter, InputWrapper } from './../../components'
+import { PageWrapper, SelectWithFilter, InputWrapper, Select } from './../../components'
 import { transformResponseToSelectFormat } from './../../utils'
 import { returnClients, returnProfessionals, returnServicesByProfessional } from './../../mocks/apiMocks'
 import './CriarAgendamento.css'
 import TimePicker from 'react-times';
 import moment from 'moment';
-import { get as _get } from 'lodash';
 
 import 'react-times/css/material/default.css';
 import 'react-times/css/classic/default.css';
+
+const durationOptions = [
+  {value: 30, label: '30 minutos'},
+  {value: 45, label: '45 minutos'},
+  {value: 60, label: '1 hora'},
+  {value: 90, label: '1 hora e meia'},
+  {value: 120, label: '2 horas'},
+]
 
 class CriarAgendamento extends Component {
   state = {
     cliente: '',
     funcionario: '',
-    clientOptions: [],
-    funcionariosOptions: [],
-    services: [],
-    servicesSelected: [],
     view: {
       horary: {
         hour: moment().format('HH'),
         minute: moment().format('mm'),
-      }
-    }
+      },
+      duration: 0,
+      services: [],
+      clients: [],
+      professionals: [],
+    },
   }
 
   componentDidMount = () => {
     returnClients()
       .then(response => transformResponseToSelectFormat(response, '_id', 'name'))
-      .then(response => this.setState({clientOptions: response}))
+      .then(clients => this.updateViewerStateArray(clients, 'clients'))
 
     returnProfessionals()
       .then(response => transformResponseToSelectFormat(response, 'document_number', 'name'))
-      .then(response => this.setState({funcionariosOptions: response}))
+      .then(professionals =>  this.updateViewerStateArray(professionals, 'professionals'))
+  }
+
+  updateViewerStateObject = (newProperties, object) => {
+    this.setState({
+      view: {...this.state.view,
+        [object]: { ...this.state.view[object], ...newProperties }
+      }
+    })
+  }
+
+  updateViewerStateArray = (newProperties, object, reset = false) => {
+    this.setState({
+      view: {...this.state.view,
+        [object]: reset ? newProperties : this.state.view[object].concat(newProperties)
+      }
+    })
   }
 
   onSelectClienteHandler = (selected) => {
@@ -43,35 +66,35 @@ class CriarAgendamento extends Component {
   updateServiceList = () => {
     const { funcionario: { value }} = this.state
     returnServicesByProfessional(value)
-      .then(services => this.setState({services}))
+      .then(services =>  this.updateViewerStateArray(services, 'services', true))
   }
 
   onSelectProfessionalHandler = (selected) => {
     this.setState({funcionario: selected, services: []}, this.updateServiceList)
   }
 
-  onCheckboxChangeHandler = (node, index) => {
-    const services = [...this.state.services].slice();
-    services[index] = {...[...services][index], checked: node.target.checked}
-    this.setState({services})
+  onSelectDurationHandler = (duration) => {
+    console.log('duration', duration.target.value)
   }
 
-  updateViewerState = (newProperties, object) => {
-    this.setState({view: {...this.state.view, [object]: { ...this.state.view[object], ...newProperties }} })
+  onCheckboxChangeHandler = (node, index) => {
+    const services = [...this.state.view.services].slice();
+    services[index] = {...[...services][index], checked: node.target.checked}
+    this.updateViewerStateArray(services, 'services', true)
   }
 
   onFocusChange = (focused) => {
-    this.updateViewerState({focused}, 'horary')
+    this.updateViewerStateObject({focused}, 'horary')
   }
 
   onTimeChange = ({hour, minute, meridiem}) => {
-    this.updateViewerState({hour, minute, meridiem}, 'horary')
+    this.updateViewerStateObject({hour, minute, meridiem}, 'horary')
   }
 
   render() {
-    const { cliente, funcionario, clientOptions, funcionariosOptions, services } = this.state
-    const hour = _get(this, 'state.view.horary.hour')
-    const minute = _get(this, 'state.view.horary.minute')
+    const { cliente, funcionario, view } = this.state
+    const { professionals, clients, horary, services } = view
+    const { hour, minute } = horary
 
     return(
       <PageWrapper>
@@ -86,7 +109,7 @@ class CriarAgendamento extends Component {
               placeholder=""
               selected={cliente}
               onSelectHandler={this.onSelectClienteHandler}
-              options={clientOptions} />
+              options={clients} />
           } />
 
           <InputWrapper label="Pesquise por um funcionário" id="funcionario" input={() =>
@@ -94,7 +117,7 @@ class CriarAgendamento extends Component {
               placeholder=""
               selected={funcionario}
               onSelectHandler={this.onSelectProfessionalHandler}
-              options={funcionariosOptions} />
+              options={professionals} />
           } />
 
           {services.map((service, index) => (
@@ -107,6 +130,15 @@ class CriarAgendamento extends Component {
                 type="checkbox" />
             } />
           ))}
+
+          <InputWrapper label="Selecione a duração" id="duration" input={() =>
+            <Select
+              placeholder=""
+              name="duration"
+              selected={funcionario}
+              onSelectHandler={this.onSelectDurationHandler}
+              options={durationOptions} />
+          } />
         </form>
       </PageWrapper>
     )
