@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { PageWrapper, SelectWithFilter, InputWrapper, Select } from './../../components'
 import { transformResponseToSelectFormat } from './../../utils'
-import { returnClients, returnProfessionals, returnServicesByProfessional } from './../../mocks/apiMocks'
+import { returnClients, returnProfessionals, returnServicesByProfessional,
+  returnClientById, returnProfessionalByDocument } from './../../mocks/apiMocks'
 import './CriarAgendamento.css'
 import TimePicker from 'react-times';
 import moment from 'moment';
@@ -19,8 +20,10 @@ const durationOptions = [
 
 class CriarAgendamento extends Component {
   state = {
-    cliente: '',
-    funcionario: '',
+    selected: {
+      client: {},
+      professional: {},
+    },
     view: {
       horary: {
         hour: moment().format('HH'),
@@ -31,46 +34,86 @@ class CriarAgendamento extends Component {
       clients: [],
       professionals: [],
     },
+    model: {
+      client: {},
+      professional: {},
+      services: [],
+      duration: undefined,
+      horary: undefined,
+    }
   }
 
   componentDidMount = () => {
     returnClients()
       .then(response => transformResponseToSelectFormat(response, '_id', 'name'))
-      .then(clients => this.updateViewerStateArray(clients, 'clients'))
+      .then(clients => this.updateStateArray('view', clients, 'clients'))
 
     returnProfessionals()
       .then(response => transformResponseToSelectFormat(response, 'document_number', 'name'))
-      .then(professionals =>  this.updateViewerStateArray(professionals, 'professionals'))
+      .then(professionals =>  this.updateStateArray('view', professionals, 'professionals'))
   }
 
-  updateViewerStateObject = (newProperties, object) => {
+  // property: objeto principal no state
+  // newProperties: novas propriedades
+  // key: objeto que vai herdar propriedades
+  // callback: função de callback
+  updateStateObject = (property, newProperties, key, callback = () => {}) => {
     this.setState({
-      view: {...this.state.view,
-        [object]: { ...this.state.view[object], ...newProperties }
+      [property]: {...this.state[property],
+        [key]: { ...this.state[property][key], ...newProperties }
+      }
+    }, () => callback())
+  }
+
+  // property: objeto principal no state
+  // newProperties: novas propriedades
+  // key: objeto que vai herdar propriedades
+  // reset: deve resetar array
+  updateStateArray = (property, newProperties, key, reset = false) => {
+    this.setState({
+      [property]: {...this.state[property],
+        [key]: reset ? newProperties : this.state[property][key].concat(newProperties)
       }
     })
   }
 
-  updateViewerStateArray = (newProperties, object, reset = false) => {
-    this.setState({
-      view: {...this.state.view,
-        [object]: reset ? newProperties : this.state.view[object].concat(newProperties)
-      }
-    })
+  onSelectClienteHandler = ({value, label}) => {
+    this.updateStateObject('selected', {value, label}, 'client', this.updateClientModel)
   }
 
-  onSelectClienteHandler = (selected) => {
-    this.setState({cliente: selected})
+  updateClientModel = () => {
+    const { client: { value }} = this.state.selected
+    returnClientById(value)
+    .then(client => this.updateStateObject('model', {...client}, 'client'))
+  }
+
+  onFocusChange = (focused) => {
+    this.updateStateObject('view', {focused}, 'horary')
+  }
+
+  onTimeChange = ({hour, minute, meridiem}) => {
+    this.updateStateObject('view', {hour, minute, meridiem}, 'horary')
   }
 
   updateServiceList = () => {
-    const { funcionario: { value }} = this.state
+    const { professional: { value }} = this.state.selected
     returnServicesByProfessional(value)
-      .then(services =>  this.updateViewerStateArray(services, 'services', true))
+      .then(services =>  this.updateStateArray('view', services, 'services', true))
   }
 
-  onSelectProfessionalHandler = (selected) => {
-    this.setState({funcionario: selected, services: []}, this.updateServiceList)
+  updateServiceListAndProfessionalSelected = () => {
+    this.updateServiceList()
+    this.updateProfessionalSelected()
+  }
+
+  updateProfessionalSelected = () => {
+    const { professional: { value }} = this.state.selected
+    returnProfessionalByDocument(value)
+      .then(professional => this.updateStateObject('model', {...professional}, 'professional'))
+  }
+
+  onSelectProfessionalHandler = ({value, label}) => {
+    this.updateStateObject('selected', {value, label}, 'professional', this.updateServiceListAndProfessionalSelected)
   }
 
   onSelectDurationHandler = ({target}) => {
@@ -81,22 +124,15 @@ class CriarAgendamento extends Component {
   onCheckboxChangeHandler = (node, index) => {
     const services = [...this.state.view.services].slice();
     services[index] = {...[...services][index], checked: node.target.checked}
-    this.updateViewerStateArray(services, 'services', true)
-  }
-
-  onFocusChange = (focused) => {
-    this.updateViewerStateObject({focused}, 'horary')
-  }
-
-  onTimeChange = ({hour, minute, meridiem}) => {
-    this.updateViewerStateObject({hour, minute, meridiem}, 'horary')
+    this.updateStateArray('view', services, 'services', true)
   }
 
   render() {
-    const { cliente, funcionario, view } = this.state
+    const { view, selected } = this.state
     const { professionals, clients, horary, services, duration } = view
+    const { client, professional } = selected
     const { hour, minute } = horary
-
+    console.log(JSON.stringify(this.state.model, null, 2))
     return(
       <PageWrapper>
         <form>
@@ -109,7 +145,7 @@ class CriarAgendamento extends Component {
           <InputWrapper label="Pesquise por um cliente" id="cliente" input={() =>
             <SelectWithFilter
               placeholder=""
-              selected={cliente}
+              selected={client}
               onSelectHandler={this.onSelectClienteHandler}
               options={clients} />
           } />
@@ -117,7 +153,7 @@ class CriarAgendamento extends Component {
           <InputWrapper label="Pesquise por um funcionário" id="funcionario" input={() =>
             <SelectWithFilter
               placeholder=""
-              selected={funcionario}
+              selected={professional}
               onSelectHandler={this.onSelectProfessionalHandler}
               options={professionals} />
           } />
