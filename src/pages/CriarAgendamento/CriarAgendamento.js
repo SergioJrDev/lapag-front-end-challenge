@@ -26,7 +26,7 @@ class CriarAgendamento extends Component {
         hour: moment().format('HH'),
         minute: moment().format('mm'),
       },
-      duration: 0,
+      duration: undefined,
       services: [],
       clients: [],
       professionals: [],
@@ -73,8 +73,9 @@ class CriarAgendamento extends Component {
     this.setState({funcionario: selected, services: []}, this.updateServiceList)
   }
 
-  onSelectDurationHandler = (duration) => {
-    console.log('duration', duration.target.value)
+  onSelectDurationHandler = ({target}) => {
+    const { value } = target
+    this.setState({view: { ...this.state.view, duration: value }})
   }
 
   onCheckboxChangeHandler = (node, index) => {
@@ -93,17 +94,18 @@ class CriarAgendamento extends Component {
 
   render() {
     const { cliente, funcionario, view } = this.state
-    const { professionals, clients, horary, services } = view
+    const { professionals, clients, horary, services, duration } = view
     const { hour, minute } = horary
 
     return(
       <PageWrapper>
         <form>
-        <TimePicker
-          time={`${hour}:${minute}`}
-          colorPalette="dark"
-          onFocusChange={this.onFocusChange}
-          onTimeChange={this.onTimeChange} />
+          <TimePicker
+            time={`${hour}:${minute}`}
+            colorPalette="dark"
+            onFocusChange={this.onFocusChange}
+            onTimeChange={this.onTimeChange} />
+
           <InputWrapper label="Pesquise por um cliente" id="cliente" input={() =>
             <SelectWithFilter
               placeholder=""
@@ -135,7 +137,7 @@ class CriarAgendamento extends Component {
             <Select
               placeholder=""
               name="duration"
-              selected={funcionario}
+              value={duration}
               onSelectHandler={this.onSelectDurationHandler}
               options={durationOptions} />
           } />
