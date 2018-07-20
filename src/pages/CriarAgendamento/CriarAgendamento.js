@@ -18,30 +18,35 @@ const durationOptions = [
   {value: 120, label: '2 horas'},
 ]
 
-class CriarAgendamento extends Component {
-  state = {
-    selected: {
-      client: {},
-      professional: {},
+const hour = moment().format('HH')
+const minute = moment().format('mm')
+
+const stateDefault = {
+  selected: {
+    client: {},
+    professional: {},
+  },
+  view: {
+    horary: {
+      hour,
+      minute,
     },
-    view: {
-      horary: {
-        hour: moment().format('HH'),
-        minute: moment().format('mm'),
-      },
-      duration: undefined,
-      services: [],
-      clients: [],
-      professionals: [],
-    },
-    model: {
-      client: {},
-      professional: {},
-      services: [],
-      duration: undefined,
-      horary: undefined,
-    }
+    duration: undefined,
+    services: [],
+    clients: [],
+    professionals: [],
+  },
+  model: {
+    client: {},
+    professional: {},
+    services: [],
+    duration: undefined,
+    horary: `${hour}:${minute}`,
   }
+}
+
+class CriarAgendamento extends Component {
+  state = {...stateDefault}
 
   componentDidMount = () => {
     returnClients()
@@ -93,6 +98,7 @@ class CriarAgendamento extends Component {
 
   onTimeChange = ({hour, minute, meridiem}) => {
     this.updateStateObject('view', {hour, minute, meridiem}, 'horary')
+    this.setState({model: { ...this.state.model, horary: `${hour}:${minute}` }})
   }
 
   updateServiceList = () => {
