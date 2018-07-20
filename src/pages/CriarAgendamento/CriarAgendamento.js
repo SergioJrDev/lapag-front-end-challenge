@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { PageWrapper, SelectWithFilter, InputWrapper, Select } from './../../components'
+import { PageWrapper, SelectWithFilter, InputWrapper, Select, Button } from './../../components'
 import { transformResponseToSelectFormat } from './../../utils'
 import { returnClients, returnProfessionals, returnServicesByProfessional,
   returnClientById, returnProfessionalByDocument } from './../../mocks/apiMocks'
@@ -152,13 +152,21 @@ class CriarAgendamento extends Component {
     this.updateStateArray('model', servicesFiltered, 'services', true)
   }
 
+  validateForm = () => {
+    const { model } = this.state
+    const { date, client, professional, services, duration, horary } = model
+
+    return date && client && professional && services && services.length > 0 && duration && horary
+  }
+
   render() {
     const { view, selected } = this.state
     const { professionals, clients, horary, services, duration, date } = view
     const { client, professional } = selected
     const { hour, minute } = horary
     const formatedDate = moment(date).format('DD/MM')
-    console.log(JSON.stringify(this.state.model, null, 2))
+    const isValidForm = !this.validateForm()
+  
     return(
       <PageWrapper>
         <form>
@@ -210,6 +218,7 @@ class CriarAgendamento extends Component {
               onSelectHandler={this.onSelectDurationHandler}
               options={durationOptions} />
           } />
+          <Button disabled={isValidForm} onClick={() => {}}>Salvar</Button>
         </form>
       </PageWrapper>
     )
