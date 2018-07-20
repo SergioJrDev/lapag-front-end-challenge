@@ -2,6 +2,13 @@
   margin: auto;
   margin-bottom: 30px; }
 
+.services-options .input_wrapper {
+  display: flex;
+  align-items: center; }
+
+.services-options label {
+  margin-right: 5px; }
+
 /**
  * React Select
  * ============

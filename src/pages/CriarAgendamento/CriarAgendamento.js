@@ -6,6 +6,7 @@ import { returnClients, returnProfessionals, returnServicesByProfessional,
 import './CriarAgendamento.css'
 import TimePicker from 'react-times';
 import moment from 'moment';
+import { get as _get } from 'lodash'
 
 import 'react-times/css/material/default.css';
 import 'react-times/css/classic/default.css';
@@ -35,8 +36,10 @@ const stateDefault = {
     services: [],
     clients: [],
     professionals: [],
+    date: undefined,
   },
   model: {
+    date: undefined,
     client: {},
     professional: {},
     services: [],
@@ -56,6 +59,12 @@ class CriarAgendamento extends Component {
     returnProfessionals()
       .then(response => transformResponseToSelectFormat(response, 'document_number', 'name'))
       .then(professionals =>  this.updateStateArray('view', professionals, 'professionals'))
+    
+    const date = _get(this, 'props.scheduleDate.currentDate', false)
+    this.setState({
+      model: { ...this.state.model, date},
+      view: { ...this.state.view, date}
+    })
   }
 
   // property: objeto principal no state
@@ -125,7 +134,10 @@ class CriarAgendamento extends Component {
 
   onSelectDurationHandler = ({target}) => {
     const { value } = target
-    this.setState({view: { ...this.state.view, duration: value }})
+    this.setState({
+      view: { ...this.state.view, duration: value },
+      model: { ...this.state.model, duration: value },
+    })
   }
 
   onSelectServiceHandler = (node, index) => {
@@ -142,20 +154,25 @@ class CriarAgendamento extends Component {
 
   render() {
     const { view, selected } = this.state
-    const { professionals, clients, horary, services, duration } = view
+    const { professionals, clients, horary, services, duration, date } = view
     const { client, professional } = selected
     const { hour, minute } = horary
+    const formatedDate = moment(date).format('DD/MM')
     console.log(JSON.stringify(this.state.model, null, 2))
     return(
       <PageWrapper>
         <form>
-          <TimePicker
-            time={`${hour}:${minute}`}
-            colorPalette="dark"
-            onFocusChange={this.onFocusChange}
-            onTimeChange={this.onTimeChange} />
+          <p>Agendamento para o dia: {formatedDate}</p>
+          <div className="input_wrapper">
+            <label>Selecione um horário</label>
+            <TimePicker
+              time={`${hour}:${minute}`}
+              colorPalette="dark"
+              onFocusChange={this.onFocusChange}
+              onTimeChange={this.onTimeChange} />
+          </div>
 
-          <InputWrapper label="Pesquise por um cliente" id="cliente" input={() =>
+          <InputWrapper label="Pesquise por um cliente" input={() =>
             <SelectWithFilter
               placeholder=""
               selected={client}
@@ -163,7 +180,7 @@ class CriarAgendamento extends Component {
               options={clients} />
           } />
 
-          <InputWrapper label="Pesquise por um funcionário" id="funcionario" input={() =>
+          <InputWrapper label="Pesquise por um funcionário" input={() =>
             <SelectWithFilter
               placeholder=""
               selected={professional}
@@ -171,18 +188,21 @@ class CriarAgendamento extends Component {
               options={professionals} />
           } />
 
-          {services.map((service, index) => (
-            <InputWrapper key={index} label={service.name} id="funcionario" input={() =>
-              <input
-                name='name'
+          <div className="services-options">
+            {services.map((service, index) => (
+              <InputWrapper key={index} label={service.name} input={(props) =>
+                <input
+                name={props.name}
+                id={props.id}
                 checked={service.checked}
                 onChange={element => this.onSelectServiceHandler(element, index)}
                 value={service.name}
                 type="checkbox" />
-            } />
-          ))}
+              } />
+            ))}
+          </div>
 
-          <InputWrapper label="Selecione a duração" id="duration" input={() =>
+          <InputWrapper label="Selecione a duração" input={() =>
             <Select
               placeholder=""
               name="duration"
