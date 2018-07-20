@@ -6,7 +6,6 @@ import { returnClients, returnProfessionals, returnServicesByProfessional,
 import './CriarAgendamento.css'
 import TimePicker from 'react-times';
 import moment from 'moment';
-import { get as _get } from 'lodash'
 
 import 'react-times/css/material/default.css';
 import 'react-times/css/classic/default.css';
