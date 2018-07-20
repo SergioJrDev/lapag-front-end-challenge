@@ -159,6 +159,12 @@ class CriarAgendamento extends Component {
     return date && client && professional && services && services.length > 0 && duration && horary
   }
 
+  onSubmitHandler = (event) => {
+    console.log(JSON.stringify(this.state.model, null, 2))
+    event.preventDefault()
+    return false
+  }
+
   render() {
     const { view, selected } = this.state
     const { professionals, clients, horary, services, duration, date } = view
@@ -218,7 +224,7 @@ class CriarAgendamento extends Component {
               onSelectHandler={this.onSelectDurationHandler}
               options={durationOptions} />
           } />
-          <Button disabled={isValidForm} onClick={() => {}}>Salvar</Button>
+          <Button disabled={isValidForm} onClick={this.onSubmitHandler}>Salvar</Button>
         </form>
       </PageWrapper>
     )
