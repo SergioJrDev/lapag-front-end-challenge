@@ -2,7 +2,13 @@ import React, { Component } from 'react'
 import { PageWrapper, SelectWithFilter, InputWrapper } from './../../components'
 import { transformResponseToSelectFormat } from './../../utils'
 import { returnClients, returnProfessionals, returnServicesByProfessional } from './../../mocks/apiMocks'
-import './style.css'
+import './CriarAgendamento.css'
+import TimePicker from 'react-times';
+import moment from 'moment';
+import { get as _get } from 'lodash';
+
+import 'react-times/css/material/default.css';
+import 'react-times/css/classic/default.css';
 
 class CriarAgendamento extends Component {
   state = {
@@ -12,6 +18,12 @@ class CriarAgendamento extends Component {
     funcionariosOptions: [],
     services: [],
     servicesSelected: [],
+    view: {
+      horary: {
+        hour: moment().format('HH'),
+        minute: moment().format('mm'),
+      }
+    }
   }
 
   componentDidMount = () => {
@@ -44,12 +56,31 @@ class CriarAgendamento extends Component {
     this.setState({services})
   }
 
+  updateViewerState = (newProperties, object) => {
+    this.setState({view: {...this.state.view, [object]: { ...this.state.view[object], ...newProperties }} })
+  }
+
+  onFocusChange = (focused) => {
+    this.updateViewerState({focused}, 'horary')
+  }
+
+  onTimeChange = ({hour, minute, meridiem}) => {
+    this.updateViewerState({hour, minute, meridiem}, 'horary')
+  }
+
   render() {
     const { cliente, funcionario, clientOptions, funcionariosOptions, services } = this.state
+    const hour = _get(this, 'state.view.horary.hour')
+    const minute = _get(this, 'state.view.horary.minute')
 
     return(
       <PageWrapper>
         <form>
+        <TimePicker
+          time={`${hour}:${minute}`}
+          colorPalette="dark"
+          onFocusChange={this.onFocusChange}
+          onTimeChange={this.onTimeChange} />
           <InputWrapper label="Pesquise por um cliente" id="cliente" input={() =>
             <SelectWithFilter
               placeholder=""
