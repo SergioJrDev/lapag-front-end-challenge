@@ -4,4 +4,6 @@ export { default as PageWrapper } from './PageWrapper'
  export { default as SelectWithFilter } from './SelectWithFilter'
  export { default as InputWrapper } from './InputWrapper'
  export { default as Select } from './Select'
- 
+ export { default as ScheduleGridItem } from './ScheduleGridItem'
+ export { default as ScheduleGrid } from './ScheduleGrid'
+ export { default as ScheduleItemDetails } from './ScheduleItemDetails'
