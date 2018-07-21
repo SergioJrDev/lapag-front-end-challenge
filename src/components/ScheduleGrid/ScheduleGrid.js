@@ -3,18 +3,22 @@ import PropTypes from 'prop-types'
 import { ScheduleGridItem } from './../'
 import './ScheduleGrid.css'
 
+const generateAvaliableHoursArray = ({startHour, endHour}) => {
+  let hoursAvaliablePerDay = []
+  for(let i = startHour; i <= endHour; i++) {
+    hoursAvaliablePerDay.push(i)
+  }
+  return hoursAvaliablePerDay
+}
+
 class ScheduleGrid extends Component {
   constructor(props) {
     super(props)
-    const { startHour, endHour } = this.props
-    let hoursAvaliablePerDay = []
-    for(let i = startHour; i <= endHour; i++) {
-      hoursAvaliablePerDay.push(i)
-    }
     this.state = {
-      hoursAvaliablePerDay,
+      hoursAvaliablePerDay: generateAvaliableHoursArray(this.props)
     }
   }
+
   render() {
     const { hoursAvaliablePerDay } = this.state
     const { schedules } = this.props
