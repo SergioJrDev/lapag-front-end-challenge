@@ -10,13 +10,19 @@ class Home extends Component {
   }
 
   render() {
-    const { currentDate } = this.props.scheduleDate
+    const { schedules, scheduleDate } = this.props
+    const { currentDate } = scheduleDate
+  
     return(
       <PageWrapper>
         <div>
           <DatePicker startDate={currentDate} onChangeHandler={this.onChangeHandler} />
           <p>{transformDateToDayOfWeek(currentDate)}</p>
-          <ScheduleGrid />
+          <ScheduleGrid
+            schedules={schedules}
+            startHour={10}
+            endHour={20}
+          />
         </div>
       </PageWrapper>
     )
