@@ -5,6 +5,7 @@ import './ScheduleWrapper.css'
 class ScheduleWrapper extends Component {
   render() {
     const { allSchedules, allProfessionals } = this.props
+    console.log('scheules scheduleWrapper', allSchedules)
     // console.log(allProfessionals)
 
     return(

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { SelectWithFilter, InputWrapper, Select, Button } from './../../components'
 import { transformResponseToSelectFormat } from './../../utils'
-import { PageWrapper } from './../../containers'
 import { returnClients, returnProfessionals, returnServicesByProfessional,
   returnClientById, returnProfessionalByDocument } from './../../mocks/apiMocks'
+import { addNewSchedule } from './../../actions'
 import './CriarAgendamento.css'
 import TimePicker from 'react-times';
 import moment from 'moment';
@@ -158,7 +158,9 @@ class CriarAgendamento extends Component {
   }
 
   onSubmitHandler = (event) => {
-    console.log(JSON.stringify(this.state.model, null, 2))
+    const { model } = this.state
+    console.log(JSON.stringify(model, null, 2))
+    this.props.dispatch(addNewSchedule(model))
     this.setState({...stateDefault})
     event.preventDefault()
     return false
@@ -173,59 +175,57 @@ class CriarAgendamento extends Component {
     const isValidForm = !this.validateForm()
   
     return(
-      <PageWrapper>
-        <form>
-          <p>Agendamento para o dia: {formatedDate}</p>
-          <div className="input_wrapper">
-            <label>Selecione um horário</label>
-            <TimePicker
-              time={`${hour}:${minute}`}
-              colorPalette="dark"
-              onFocusChange={this.onFocusChange}
-              onTimeChange={this.onTimeChange} />
-          </div>
+      <form>
+        <p>Agendamento para o dia: {formatedDate}</p>
+        <div className="input_wrapper">
+          <label>Selecione um horário</label>
+          <TimePicker
+            time={`${hour}:${minute}`}
+            colorPalette="dark"
+            onFocusChange={this.onFocusChange}
+            onTimeChange={this.onTimeChange} />
+        </div>
 
-          <InputWrapper label="Pesquise por um cliente" input={() =>
-            <SelectWithFilter
-              placeholder=""
-              selected={client}
-              onSelectHandler={this.onSelectClienteHandler}
-              options={clients} />
-          } />
+        <InputWrapper label="Pesquise por um cliente" input={() =>
+          <SelectWithFilter
+            placeholder=""
+            selected={client}
+            onSelectHandler={this.onSelectClienteHandler}
+            options={clients} />
+        } />
 
-          <InputWrapper label="Pesquise por um funcionário" input={() =>
-            <SelectWithFilter
-              placeholder=""
-              selected={professional}
-              onSelectHandler={this.onSelectProfessionalHandler}
-              options={professionals} />
-          } />
+        <InputWrapper label="Pesquise por um funcionário" input={() =>
+          <SelectWithFilter
+            placeholder=""
+            selected={professional}
+            onSelectHandler={this.onSelectProfessionalHandler}
+            options={professionals} />
+        } />
 
-          <div className="services-options">
-            {services.map((service, index) => (
-              <InputWrapper key={index} label={service.name} input={(props) =>
-                <input
-                name={props.name}
-                id={props.id}
-                checked={service.checked}
-                onChange={element => this.onSelectServiceHandler(element, index)}
-                value={service.name}
-                type="checkbox" />
-              } />
-            ))}
-          </div>
+        <div className="services-options">
+          {services.map((service, index) => (
+            <InputWrapper key={index} label={service.name} input={(props) =>
+              <input
+              name={props.name}
+              id={props.id}
+              checked={service.checked}
+              onChange={element => this.onSelectServiceHandler(element, index)}
+              value={service.name}
+              type="checkbox" />
+            } />
+          ))}
+        </div>
 
-          <InputWrapper label="Selecione a duração" input={() =>
-            <Select
-              placeholder=""
-              name="duration"
-              value={duration}
-              onSelectHandler={this.onSelectDurationHandler}
-              options={durationOptions} />
-          } />
-          <Button disabled={isValidForm} onClick={this.onSubmitHandler}>Salvar</Button>
-        </form>
-      </PageWrapper>
+        <InputWrapper label="Selecione a duração" input={() =>
+          <Select
+            placeholder=""
+            name="duration"
+            value={duration}
+            onSelectHandler={this.onSelectDurationHandler}
+            options={durationOptions} />
+        } />
+        <Button disabled={isValidForm} onClick={this.onSubmitHandler}>Salvar</Button>
+      </form>
     )
   }
 }

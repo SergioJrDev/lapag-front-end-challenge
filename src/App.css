@@ -26,7 +26,8 @@ p {
   right: 40px;
   bottom: 40px;
   background-color: #fff;
-  margin: auto; }
+  margin: auto;
+  overflow: scroll; }
 
 .Overlay {
   position: fixed;

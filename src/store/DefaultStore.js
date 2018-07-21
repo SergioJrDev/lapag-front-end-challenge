@@ -123,7 +123,7 @@ const mockSchedule = [
   ],
   "duration": "30",
   "horary": "12:10"
-}
+},
 ]
 
 const DefaultStore = {
@@ -136,7 +136,7 @@ const DefaultStore = {
   schedules: mockSchedule,
   ui: {
     modal: {
-      isOpen: true,
+      isOpen: false,
       content: null
     },
   },
