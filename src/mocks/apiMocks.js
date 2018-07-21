@@ -7,6 +7,21 @@ export const returnProfessionals = () =>
     }, 100);
   });
 
+  export const returnProfessionalByDocument = (professional_document) =>
+  new Promise((resolve, reject) => {
+    setTimeout(function() {
+      if(!professional_document) {
+        return reject('CPF não informado para filtrar profissional.')
+      }
+
+      const professionalFiltered =
+        professionalMocks
+          .filter(professional => professional.document_number === professional_document)
+
+      resolve(professionalFiltered[0]);
+    }, 100);
+  });
+
 export const returnServices = () =>
   new Promise((resolve, reject) => {
     setTimeout(function() {
@@ -18,7 +33,7 @@ export const returnServicesByProfessional = (professional_document) =>
   new Promise((resolve, reject) => {
     setTimeout(function() {
       if(!professional_document) {
-        return reject('CPF não informado.')
+        return reject('CPF não informado para filtrar serviços.')
       }
 
       const servicesFiltered = []
@@ -35,6 +50,23 @@ export const returnServicesByProfessional = (professional_document) =>
 export const returnClients = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
+      resolve(clientsMocks)
+    }, 200);
+  })
+};
+
+export const returnClientById = (id) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if(!id) {
+        return reject('ID não informado para filtrar clientes.')
+      }
+
+      const clietFiltered =
+        clientsMocks
+          .filter(client => client._id === id)
+
+      resolve(clietFiltered[0]);
       resolve(clientsMocks)
     }, 200);
   })

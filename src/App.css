@@ -11,6 +11,8 @@ button {
   border-radius: 4px; }
   button:hover {
     background: #0f6e91; }
+  button:disabled, button[disabled] {
+    background: #7bd1f1; }
 
 p {
   color: #333;

@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { PageWrapper, SelectWithFilter, InputWrapper, Select } from './../../components'
+import { PageWrapper, SelectWithFilter, InputWrapper, Select, Button } from './../../components'
 import { transformResponseToSelectFormat } from './../../utils'
-import { returnClients, returnProfessionals, returnServicesByProfessional } from './../../mocks/apiMocks'
+import { returnClients, returnProfessionals, returnServicesByProfessional,
+  returnClientById, returnProfessionalByDocument } from './../../mocks/apiMocks'
 import './CriarAgendamento.css'
 import TimePicker from 'react-times';
 import moment from 'moment';
@@ -17,123 +18,203 @@ const durationOptions = [
   {value: 120, label: '2 horas'},
 ]
 
+const hour = moment().format('HH')
+const minute = moment().format('mm')
+
+const stateDefault = {
+  selected: {
+    client: {},
+    professional: {},
+  },
+  view: {
+    horary: {
+      hour,
+      minute,
+    },
+    duration: undefined,
+    services: [],
+    clients: [],
+    professionals: [],
+    date: undefined,
+  },
+  model: {
+    date: undefined,
+    client: {},
+    professional: {},
+    services: [],
+    duration: undefined,
+    horary: `${hour}:${minute}`,
+  }
+}
+
 class CriarAgendamento extends Component {
   state = {
-    cliente: '',
-    funcionario: '',
-    view: {
-      horary: {
-        hour: moment().format('HH'),
-        minute: moment().format('mm'),
-      },
-      duration: undefined,
-      services: [],
-      clients: [],
-      professionals: [],
-    },
+    ...stateDefault,
+    model: { ...stateDefault.model, date: this.props.scheduleDate.currentDate },
+    view: { ...stateDefault.view, date: this.props.scheduleDate.currentDate },
   }
 
   componentDidMount = () => {
     returnClients()
       .then(response => transformResponseToSelectFormat(response, '_id', 'name'))
-      .then(clients => this.updateViewerStateArray(clients, 'clients'))
+      .then(clients => this.updateStateArray('view', clients, 'clients'))
 
     returnProfessionals()
       .then(response => transformResponseToSelectFormat(response, 'document_number', 'name'))
-      .then(professionals =>  this.updateViewerStateArray(professionals, 'professionals'))
+      .then(professionals =>  this.updateStateArray('view', professionals, 'professionals'))
   }
 
-  updateViewerStateObject = (newProperties, object) => {
+  // property: objeto principal no state
+  // newProperties: novas propriedades
+  // key: objeto que vai herdar as novas propriedades
+  // callback: função de callback
+  updateStateObject = (property, newProperties, key, callback = () => {}) => {
     this.setState({
-      view: {...this.state.view,
-        [object]: { ...this.state.view[object], ...newProperties }
+      [property]: {...this.state[property],
+        [key]: { ...this.state[property][key], ...newProperties }
       }
-    })
+    }, callback)
   }
 
-  updateViewerStateArray = (newProperties, object, reset = false) => {
+  // property: objeto principal no state
+  // newProperties: novas propriedades
+  // key: array que vai herdar as novas propriedades
+  // reset: deve resetar array
+  // callback: função de callback
+  updateStateArray = (property, newProperties, key, reset = false, callback = () => {}) => {
     this.setState({
-      view: {...this.state.view,
-        [object]: reset ? newProperties : this.state.view[object].concat(newProperties)
+      [property]: {...this.state[property],
+        [key]: reset ? newProperties : this.state[property][key].concat(newProperties)
       }
-    })
+    }, callback)
   }
 
-  onSelectClienteHandler = (selected) => {
-    this.setState({cliente: selected})
+  onSelectClienteHandler = ({value, label}) => {
+    this.updateStateObject('selected', {value, label}, 'client', this.updateClientModel)
+  }
+
+  updateClientModel = () => {
+    const { client: { value }} = this.state.selected
+    returnClientById(value)
+      .then(client => this.updateStateObject('model', {...client}, 'client'))
+  }
+
+  onFocusChange = (focused) => {
+    this.updateStateObject('view', {focused}, 'horary')
+  }
+
+  onTimeChange = ({hour, minute, meridiem}) => {
+    this.updateStateObject('view', {hour, minute, meridiem}, 'horary')
+    this.setState({model: { ...this.state.model, horary: `${hour}:${minute}` }})
   }
 
   updateServiceList = () => {
-    const { funcionario: { value }} = this.state
+    const { professional: { value }} = this.state.selected
     returnServicesByProfessional(value)
-      .then(services =>  this.updateViewerStateArray(services, 'services', true))
+      .then(services =>  this.updateStateArray('view', services, 'services', true, this.filterSelectedsServices))
   }
 
-  onSelectProfessionalHandler = (selected) => {
-    this.setState({funcionario: selected, services: []}, this.updateServiceList)
+  updateServiceListAndProfessionalSelected = () => {
+    this.updateServiceList()
+    this.updateProfessionalSelected()
+  }
+
+  updateProfessionalSelected = () => {
+    const { professional: { value }} = this.state.selected
+    returnProfessionalByDocument(value)
+      .then(professional => this.updateStateObject('model', {...professional}, 'professional'))
+  }
+
+  onSelectProfessionalHandler = ({value, label}) => {
+    this.updateStateObject('selected', {value, label}, 'professional', this.updateServiceListAndProfessionalSelected)
   }
 
   onSelectDurationHandler = ({target}) => {
     const { value } = target
-    this.setState({view: { ...this.state.view, duration: value }})
+    this.setState({
+      view: { ...this.state.view, duration: value },
+      model: { ...this.state.model, duration: value },
+    })
   }
 
-  onCheckboxChangeHandler = (node, index) => {
+  onSelectServiceHandler = (node, index) => {
     const services = [...this.state.view.services].slice();
     services[index] = {...[...services][index], checked: node.target.checked}
-    this.updateViewerStateArray(services, 'services', true)
+    this.updateStateArray('view', services, 'services', true, this.filterSelectedsServices)
   }
 
-  onFocusChange = (focused) => {
-    this.updateViewerStateObject({focused}, 'horary')
+  filterSelectedsServices = () => {
+    const { services } = this.state.view
+    const servicesFiltered = services.filter(service => service.checked)
+    this.updateStateArray('model', servicesFiltered, 'services', true)
   }
 
-  onTimeChange = ({hour, minute, meridiem}) => {
-    this.updateViewerStateObject({hour, minute, meridiem}, 'horary')
+  validateForm = () => {
+    const { model } = this.state
+    const { date, client, professional, services, duration, horary } = model
+
+    return date && client && professional && services && services.length > 0 && duration && horary
+  }
+
+  onSubmitHandler = (event) => {
+    console.log(JSON.stringify(this.state.model, null, 2))
+    this.setState({...stateDefault})
+    event.preventDefault()
+    return false
   }
 
   render() {
-    const { cliente, funcionario, view } = this.state
-    const { professionals, clients, horary, services, duration } = view
+    const { view, selected } = this.state
+    const { professionals, clients, horary, services, duration, date } = view
+    const { client, professional } = selected
     const { hour, minute } = horary
-
+    const formatedDate = moment(date).format('DD/MM')
+    const isValidForm = !this.validateForm()
+  
     return(
       <PageWrapper>
         <form>
-          <TimePicker
-            time={`${hour}:${minute}`}
-            colorPalette="dark"
-            onFocusChange={this.onFocusChange}
-            onTimeChange={this.onTimeChange} />
+          <p>Agendamento para o dia: {formatedDate}</p>
+          <div className="input_wrapper">
+            <label>Selecione um horário</label>
+            <TimePicker
+              time={`${hour}:${minute}`}
+              colorPalette="dark"
+              onFocusChange={this.onFocusChange}
+              onTimeChange={this.onTimeChange} />
+          </div>
 
-          <InputWrapper label="Pesquise por um cliente" id="cliente" input={() =>
+          <InputWrapper label="Pesquise por um cliente" input={() =>
             <SelectWithFilter
               placeholder=""
-              selected={cliente}
+              selected={client}
               onSelectHandler={this.onSelectClienteHandler}
               options={clients} />
           } />
 
-          <InputWrapper label="Pesquise por um funcionário" id="funcionario" input={() =>
+          <InputWrapper label="Pesquise por um funcionário" input={() =>
             <SelectWithFilter
               placeholder=""
-              selected={funcionario}
+              selected={professional}
               onSelectHandler={this.onSelectProfessionalHandler}
               options={professionals} />
           } />
 
-          {services.map((service, index) => (
-            <InputWrapper key={index} label={service.name} id="funcionario" input={() =>
-              <input
-                name='name'
+          <div className="services-options">
+            {services.map((service, index) => (
+              <InputWrapper key={index} label={service.name} input={(props) =>
+                <input
+                name={props.name}
+                id={props.id}
                 checked={service.checked}
-                onChange={element => this.onCheckboxChangeHandler(element, index)}
+                onChange={element => this.onSelectServiceHandler(element, index)}
                 value={service.name}
                 type="checkbox" />
-            } />
-          ))}
+              } />
+            ))}
+          </div>
 
-          <InputWrapper label="Selecione a duração" id="duration" input={() =>
+          <InputWrapper label="Selecione a duração" input={() =>
             <Select
               placeholder=""
               name="duration"
@@ -141,6 +222,7 @@ class CriarAgendamento extends Component {
               onSelectHandler={this.onSelectDurationHandler}
               options={durationOptions} />
           } />
+          <Button disabled={isValidForm} onClick={this.onSubmitHandler}>Salvar</Button>
         </form>
       </PageWrapper>
     )

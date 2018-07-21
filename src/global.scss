@@ -27,6 +27,9 @@ button {
   &:hover {
     background: darken($color: pick-color(), $amount: 20%)
   }
+  &:disabled, &[disabled] {
+    background: lighten($color: pick-color(), $amount: 20%)
+  }
 }
 
 p {

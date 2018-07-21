@@ -11,6 +11,7 @@ class Select extends Component {
         name={name}
         value={value}
         onChange={onSelectHandler}>
+        <option></option>
         {options.map((option, index) => <option value={option.value} key={index}>{option.label}</option>)}
         </select>
     )
