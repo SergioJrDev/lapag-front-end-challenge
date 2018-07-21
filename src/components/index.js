@@ -7,3 +7,5 @@ export { default as PageWrapper } from './PageWrapper'
  export { default as ScheduleGridItem } from './ScheduleGridItem'
  export { default as ScheduleGrid } from './ScheduleGrid'
  export { default as ScheduleItemDetails } from './ScheduleItemDetails'
+ export { default as ScheduleWrapper } from './ScheduleWrapper'
+ 

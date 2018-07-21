@@ -1,0 +1,6 @@
+.schedule_wrapper {
+  display: flex;
+  padding: 15px;
+  overflow: scroll;
+  width: 100%;
+  justify-content: center; }
