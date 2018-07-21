@@ -13,7 +13,7 @@ class ScheduleWrapper extends Component {
           <div key={professional._id}>
             <p>{professional.nickname}</p>
             <ScheduleGrid
-            {...professional}
+            professional={professional}
             schedules={allSchedules}
             startHour={10}
             endHour={20}

@@ -21,13 +21,14 @@ class ScheduleGrid extends Component {
 
   render() {
     const { hoursAvaliablePerDay } = this.state
-    const { schedules } = this.props
+    const { schedules, professional } = this.props
 
     return(
       <div className="schedule_grid">
       <div className="schedule_grid_wrapper">
           {hoursAvaliablePerDay.map((hour, index) => (
             <ScheduleGridItem
+              professional={professional}
               schedules={schedules}
               key={index}
               hour={hour} />

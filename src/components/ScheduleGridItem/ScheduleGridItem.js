@@ -4,10 +4,11 @@ import { ScheduleItemDetails } from './../'
 import moment from 'moment'
 import './ScheduleGridItem.css'
 
-const hasScheduleThatDay = ({hour, schedules}) => {
+const hasScheduleThatDay = ({hour, schedules, professional}) => {
   return schedules.filter(schedule => {
     const scheduleHour = moment(schedule.date).format('HH')
-    return parseInt(scheduleHour, 10) === hour
+    const whichProfessional = schedule.professional._id
+    return parseInt(scheduleHour, 10) === hour && professional._id === whichProfessional
   })
 }
 
