@@ -1,7 +1,7 @@
 import Component from './Home'
 import { connect } from 'react-redux'
 
-const mapStateToProps = ({scheduleDate, schedules}, props) => {
+const mapStateToProps = ({scheduleDate, ui, schedules}, props) => {
   return {
     scheduleDate,
     schedules,

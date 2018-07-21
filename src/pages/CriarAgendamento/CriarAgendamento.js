@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { PageWrapper, SelectWithFilter, InputWrapper, Select, Button } from './../../components'
+import { SelectWithFilter, InputWrapper, Select, Button } from './../../components'
 import { transformResponseToSelectFormat } from './../../utils'
+import { PageWrapper } from './../../containers'
 import { returnClients, returnProfessionals, returnServicesByProfessional,
   returnClientById, returnProfessionalByDocument } from './../../mocks/apiMocks'
 import './CriarAgendamento.css'

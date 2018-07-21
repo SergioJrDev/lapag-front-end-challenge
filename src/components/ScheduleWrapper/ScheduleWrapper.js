@@ -5,7 +5,7 @@ import './ScheduleWrapper.css'
 class ScheduleWrapper extends Component {
   render() {
     const { allSchedules, allProfessionals } = this.props
-    console.log(allProfessionals)
+    // console.log(allProfessionals)
 
     return(
       <div className="schedule_wrapper">

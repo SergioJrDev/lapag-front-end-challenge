@@ -1,1 +1,2 @@
-export { default as ScheduleWrapperC } from './ScheduleWrapper_'
+export { default as PageWrapper } from './PageWrapper'
+ 

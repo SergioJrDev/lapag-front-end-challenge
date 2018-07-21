@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { PageWrapper, DatePicker, ScheduleWrapper } from './../../components'
+import { DatePicker, ScheduleWrapper } from './../../components'
+import { PageWrapper } from './../../containers'
 import { updateCurrentScheduleDate } from './../../actions'
 import { transformDateToDayOfWeek } from './../../utils'
 import { returnProfessionals } from './../../mocks/apiMocks'
@@ -27,7 +28,6 @@ class Home extends Component {
     const { allProfessionals } = this.state
     const { schedules, scheduleDate } = this.props
     const { currentDate } = scheduleDate
-
     return(
       <PageWrapper>
         <div>

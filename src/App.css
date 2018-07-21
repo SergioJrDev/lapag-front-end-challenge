@@ -19,6 +19,24 @@ p {
   color: #333;
   line-height: 1.5; }
 
+.Modal {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  background-color: #fff;
+  margin: auto; }
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.741176); }
+
 .App {
   text-align: center; }
 
