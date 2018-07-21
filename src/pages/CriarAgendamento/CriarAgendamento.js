@@ -66,19 +66,19 @@ class CriarAgendamento extends Component {
 
   // property: objeto principal no state
   // newProperties: novas propriedades
-  // key: objeto que vai herdar propriedades
+  // key: objeto que vai herdar as novas propriedades
   // callback: função de callback
   updateStateObject = (property, newProperties, key, callback = () => {}) => {
     this.setState({
       [property]: {...this.state[property],
         [key]: { ...this.state[property][key], ...newProperties }
       }
-    }, () => callback())
+    }, callback)
   }
 
   // property: objeto principal no state
   // newProperties: novas propriedades
-  // key: objeto que vai herdar propriedades
+  // key: array que vai herdar as novas propriedades
   // reset: deve resetar array
   // callback: função de callback
   updateStateArray = (property, newProperties, key, reset = false, callback = () => {}) => {
@@ -86,7 +86,7 @@ class CriarAgendamento extends Component {
       [property]: {...this.state[property],
         [key]: reset ? newProperties : this.state[property][key].concat(newProperties)
       }
-    }, () => callback())
+    }, callback)
   }
 
   onSelectClienteHandler = ({value, label}) => {
