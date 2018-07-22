@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { DatePicker, ScheduleWrapper, Button } from './../../components'
-import { CriarAgendamento } from './../'
-import { PageWrapper, ModalWrapper } from './../../containers'
+import { PageWrapper, ModalWrapper, CreateSchedule } from './../../containers'
 import { updateCurrentScheduleDate, updateContentModal, openModal, addNewSchedule } from './../../actions'
 import { transformDateToDayOfWeek } from './../../utils'
 import { returnProfessionals } from './../../mocks/apiMocks'
@@ -67,7 +66,7 @@ class Home extends Component {
     const modalContent = () =>
     <ModalWrapper
       title="Criar agendamento">
-      <CriarAgendamento />
+      <CreateSchedule />
     </ModalWrapper>
     this.props.dispatch(updateContentModal(modalContent))
     this.props.dispatch(openModal())

@@ -4,7 +4,7 @@ import { transformResponseToSelectFormat } from './../../utils'
 import { returnClients, returnProfessionals, returnServicesByProfessional,
   returnClientById, returnProfessionalByDocument } from './../../mocks/apiMocks'
 import { addNewSchedule } from './../../actions'
-import './CriarAgendamento.css'
+import './CreateSchedule.css'
 import TimePicker from 'react-times';
 import moment from 'moment';
 
@@ -48,7 +48,7 @@ const stateDefault = {
   }
 }
 
-class CriarAgendamento extends Component {
+class CreateSchedule extends Component {
   state = {
     ...stateDefault,
     model: { ...stateDefault.model, date: this.props.scheduleDate.currentDate },
@@ -232,4 +232,4 @@ class CriarAgendamento extends Component {
   }
 }
 
-export default CriarAgendamento
+export default CreateSchedule

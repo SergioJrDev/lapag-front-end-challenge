@@ -17,6 +17,10 @@ button {
     background: #0f6e91; }
   button:disabled, button[disabled] {
     background: #7bd1f1; }
+  button.danger {
+    background: #FF7162; }
+    button.danger:hover {
+      background: #fb1800; }
 
 p {
   color: #333;

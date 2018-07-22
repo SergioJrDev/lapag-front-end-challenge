@@ -1,4 +1,4 @@
-import Component from './CriarAgendamento'
+import Component from './CreateSchedule'
 import { connect } from 'react-redux'
 
 const mapStateToProps = ({scheduleDate}, props) => {

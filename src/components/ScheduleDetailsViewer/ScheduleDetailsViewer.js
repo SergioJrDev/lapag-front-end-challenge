@@ -1,8 +1,14 @@
 import React, { Component } from 'react'
 import './ScheduleDetailsViewer.css'
+import { Button } from './../../components'
 import moment from 'moment'
 
 class ScheduleDetailsViewer extends Component {
+
+  onDeleteScheduleHandler = () => {
+
+  }
+
   render() {
     const { client, professional, services, duration, horary, date } = this.props
     const { name } = client
@@ -35,6 +41,9 @@ class ScheduleDetailsViewer extends Component {
           <span>Serviços</span>
           {services.map(({name, _id}) => <p key={_id}>{name}</p>)}
         </div>
+        <div className="flex-center">
+        <Button className="danger" onClick={this.onDeleteScheduleHandler}>Excluir agendamento</Button>
+      </div>
       </div>
     )
   }

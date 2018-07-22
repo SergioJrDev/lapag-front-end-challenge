@@ -35,6 +35,12 @@ button {
   &:disabled, &[disabled] {
     background: lighten($color: pick-color(), $amount: 20%)
   }
+  &.danger {
+    background: pick-color('danger');
+    &:hover {
+      background: darken($color: pick-color('danger'), $amount: 20%)
+    }
+  }
 }
 
 p {
