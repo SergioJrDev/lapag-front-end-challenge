@@ -13,11 +13,11 @@ import 'react-times/css/classic/default.css';
 import './react-select.css'
 
 const durationOptions = [
-  {value: 30, label: '30 minutos'},
-  {value: 45, label: '45 minutos'},
-  {value: 60, label: '1 hora'},
-  {value: 90, label: '1 hora e meia'},
-  {value: 120, label: '2 horas'},
+  {value: "30", label: '30 minutos'},
+  {value: "45", label: '45 minutos'},
+  {value: "60", label: '1 hora'},
+  {value: "90", label: '1 hora e meia'},
+  {value: "120", label: '2 horas'},
 ]
 
 const hour = moment().format('HH')
@@ -165,7 +165,20 @@ class CreateSchedule extends Component {
   filterSelectedsServices = () => {
     const { services } = this.state.view
     const servicesFiltered = services.filter(service => service.checked)
-    this.updateStateArray('model', servicesFiltered, 'services', true)
+    this.updateStateArray('model', servicesFiltered, 'services', true, this.updateDuration)
+  }
+
+  updateDuration = () => {
+    let servicesDuration = []
+    const { model: { services } } = this.state
+    services.map(({duration}) => duration && servicesDuration.push(parseInt(duration, 10)))
+    const maxDuration = servicesDuration.length > 0 && servicesDuration.reduce((a, b) => Math.max(a, b))
+    if(maxDuration) {
+      this.setState({
+        view: { ...this.state.view, duration: maxDuration },
+        model: { ...this.state.model, duration: maxDuration },
+      })
+    }
   }
 
   validateForm = () => {
