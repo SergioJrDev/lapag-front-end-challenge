@@ -39,6 +39,7 @@ const stateDefault = {
     date: undefined,
   },
   model: {
+    _id: new Date().getTime(),
     date: undefined,
     client: {},
     professional: {},

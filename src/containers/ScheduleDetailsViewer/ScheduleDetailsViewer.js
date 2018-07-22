@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import './ScheduleDetailsViewer.css'
 import { Button } from './../../components'
+import { deleteSchedule, closeModal } from './../../actions'
 import moment from 'moment'
 
 class ScheduleDetailsViewer extends Component {
 
   onDeleteScheduleHandler = () => {
-
+    const { _id } = this.props
+    _id && this.props.dispatch(deleteSchedule(_id))
+    _id && this.props.dispatch(closeModal())
   }
 
   render() {

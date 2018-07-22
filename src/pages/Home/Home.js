@@ -22,6 +22,7 @@ class Home extends Component {
     setTimeout(() => {
       this.props.dispatch(addNewSchedule(
         {
+          "_id": "75676",
           date: '2018-07-21T13:19:31.221Z',
           client: {
             _id: 'mt5mSb5oukK6Bu3Yh',

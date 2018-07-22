@@ -14,7 +14,7 @@ export default function uiReducer(state = ui, action) {
       return { ...state, modal: { ...state.modal, isOpen: true }}
 
     case CLOSE_MODAL:
-      return { ...state, modal: { ...state.modal, isOpen: false }}
+      return { ...state, modal: { ...state.modal, isOpen: false, content: null }}
 
     default:
       return state

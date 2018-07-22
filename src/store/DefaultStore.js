@@ -4,6 +4,7 @@ import moment from 'moment'
 
 const mockSchedule = [
   {
+  "_id": "1234",
   "date": "2018-07-21T17:40:32.871Z",
   "client": {
     "_id": "acovnuzcU0RHWRQT",
@@ -84,6 +85,7 @@ const mockSchedule = [
   "duration": "90",
   "horary": "15:59"
 },{
+  "_id": "4576",
   "date": "2018-07-21T13:09:53.942Z",
   "client": {
     "_id": "qL3xTjfHxfeg7xdJ",
@@ -127,9 +129,6 @@ const mockSchedule = [
 ]
 
 const DefaultStore = {
-  user: {
-    name: 'Joffrey Lannister'
-  },
   scheduleDate: {
     currentDate: moment(),
   },

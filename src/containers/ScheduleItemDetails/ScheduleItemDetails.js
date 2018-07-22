@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Button } from './../../components'
-import { ScheduleDetailsViewer } from './../../components'
-import { ModalWrapper } from './../../containers'
+import { ModalWrapper, ScheduleDetailsViewer } from './../../containers'
 import { openModal, updateContentModal } from './../../actions'
 import './ScheduleItemDetails.css'
 

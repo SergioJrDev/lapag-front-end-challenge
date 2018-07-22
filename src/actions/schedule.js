@@ -6,3 +6,10 @@ export const addNewSchedule = (params) => {
     payload: params
   }
 }
+
+export const deleteSchedule = (params) => {
+  return {
+    type: TYPE.DELETE_SCHEDULE,
+    payload: params
+  }
+}
