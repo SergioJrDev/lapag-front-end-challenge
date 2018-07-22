@@ -82,7 +82,7 @@ const mockSchedule = [
     }
   ],
   "duration": "90",
-  "horary": "15:20"
+  "horary": "15:59"
 },{
   "date": "2018-07-21T13:09:53.942Z",
   "client": {

@@ -55,14 +55,14 @@ class CriarAgendamento extends Component {
     view: { ...stateDefault.view, date: this.props.scheduleDate.currentDate },
   }
 
-  componentDidMount = () => {
-    returnClients()
-      .then(response => transformResponseToSelectFormat(response, '_id', 'name'))
-      .then(clients => this.updateStateArray('view', clients, 'clients'))
+  componentDidMount = async () => {
+   const clientResponse = await returnClients()
+   const clients = transformResponseToSelectFormat(clientResponse, '_id', 'name')
+   this.updateStateArray('view', clients, 'clients')
 
-    returnProfessionals()
-      .then(response => transformResponseToSelectFormat(response, 'document_number', 'name'))
-      .then(professionals =>  this.updateStateArray('view', professionals, 'professionals'))
+   const  professionalsResponse = await returnProfessionals()
+   const professionals = transformResponseToSelectFormat(professionalsResponse, 'document_number', 'name')
+   this.updateStateArray('view', professionals, 'professionals')
   }
 
   // property: objeto principal no state
@@ -94,10 +94,10 @@ class CriarAgendamento extends Component {
     this.updateStateObject('selected', {value, label}, 'client', this.updateClientModel)
   }
 
-  updateClientModel = () => {
+  updateClientModel = async () => {
     const { client: { value }} = this.state.selected
-    returnClientById(value)
-      .then(client => this.updateStateObject('model', {...client}, 'client'))
+    const client = await returnClientById(value)
+    this.updateStateObject('model', {...client}, 'client')
   }
 
   onFocusChange = (focused) => {
@@ -109,10 +109,10 @@ class CriarAgendamento extends Component {
     this.setState({model: { ...this.state.model, horary: `${hour}:${minute}` }})
   }
 
-  updateServiceList = () => {
+  updateServiceList = async () => {
     const { professional: { value }} = this.state.selected
-    returnServicesByProfessional(value)
-      .then(services =>  this.updateStateArray('view', services, 'services', true, this.filterSelectedsServices))
+    const services = await returnServicesByProfessional(value)
+    this.updateStateArray('view', services, 'services', true, this.filterSelectedsServices)
   }
 
   updateServiceListAndProfessionalSelected = () => {
@@ -120,10 +120,10 @@ class CriarAgendamento extends Component {
     this.updateProfessionalSelected()
   }
 
-  updateProfessionalSelected = () => {
+  updateProfessionalSelected = async () => {
     const { professional: { value }} = this.state.selected
-    returnProfessionalByDocument(value)
-      .then(professional => this.updateStateObject('model', {...professional}, 'professional'))
+    const professional = await returnProfessionalByDocument(value)
+    this.updateStateObject('model', {...professional}, 'professional')
   }
 
   onSelectProfessionalHandler = ({value, label}) => {
@@ -176,7 +176,7 @@ class CriarAgendamento extends Component {
   
     return(
       <form>
-        <p>Agendamento para o dia: {formatedDate}</p>
+        <p className="input_wrapper">Agendamento para o dia: {formatedDate}</p>
         <div className="input_wrapper">
           <label>Selecione um horário</label>
           <TimePicker
@@ -224,7 +224,9 @@ class CriarAgendamento extends Component {
             onSelectHandler={this.onSelectDurationHandler}
             options={durationOptions} />
         } />
-        <Button disabled={isValidForm} onClick={this.onSubmitHandler}>Salvar</Button>
+        <div className="flex-center">
+          <Button disabled={isValidForm} onClick={this.onSubmitHandler}>Salvar</Button>
+        </div>
       </form>
     )
   }

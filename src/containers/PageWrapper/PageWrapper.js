@@ -1,16 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Modal from 'react-modal'
-import { Button } from './../../components'
 import logo from "./../../logo-white.png";
-import { closeModal } from './../../actions'
 Modal.setAppElement('#root')
 
 class PageWrapper extends Component {
-
-  onCloseModalHandler = () => {
-    this.props.dispatch(closeModal())
-  }
 
   render() {
     const { children, ui } = this.props
@@ -29,7 +23,6 @@ class PageWrapper extends Component {
             overlayClassName="Overlay"
             isOpen={isOpen}>
             <div>
-              <Button onClick={this.onCloseModalHandler}>Fechar modal</Button>
               <Content />
             </div>
           </Modal>}

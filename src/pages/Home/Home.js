@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { DatePicker, ScheduleWrapper, Button } from './../../components'
 import { CriarAgendamento } from './../'
-import { PageWrapper } from './../../containers'
+import { PageWrapper, ModalWrapper } from './../../containers'
 import { updateCurrentScheduleDate, updateContentModal, openModal, addNewSchedule } from './../../actions'
 import { transformDateToDayOfWeek } from './../../utils'
 import { returnProfessionals } from './../../mocks/apiMocks'
@@ -21,10 +21,9 @@ class Home extends Component {
     })
 
     setTimeout(() => {
-      console.log('runnn update')
       this.props.dispatch(addNewSchedule(
         {
-          date: '2018-07-21T20:19:31.221Z',
+          date: '2018-07-21T13:19:31.221Z',
           client: {
             _id: 'mt5mSb5oukK6Bu3Yh',
             name: 'Marcelito'
@@ -65,8 +64,13 @@ class Home extends Component {
   }
 
   onOpenModalHandler = () => {
+    const modalContent = () =>
+    <ModalWrapper
+      title="Criar agendamento">
+      <CriarAgendamento />
+    </ModalWrapper>
+    this.props.dispatch(updateContentModal(modalContent))
     this.props.dispatch(openModal())
-    this.props.dispatch(updateContentModal(CriarAgendamento))
   }
 
   onChangeHandler = (startDate) => {

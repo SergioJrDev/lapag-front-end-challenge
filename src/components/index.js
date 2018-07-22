@@ -7,4 +7,3 @@ export { default as Button } from './Button'
  export { default as ScheduleGrid } from './ScheduleGrid'
  export { default as ScheduleItemDetails } from './ScheduleItemDetails'
  export { default as ScheduleWrapper } from './ScheduleWrapper'
- 

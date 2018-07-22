@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
-import moment from 'moment'
-// import PropTypes from 'prop-types'
 import './ScheduleItemDetails.css'
 
-const defineCustomStyle = ({date, duration}) => {
+const defineCustomStyle = ({horary, duration}) => {
   const height = parseInt(duration, 10) * 100 / 60
-  const minutes = moment(date).format('mm') 
+  const minutes = horary.replace(/(^\d{2})(:)/g, '')
   return { height, minutes }
 }
 

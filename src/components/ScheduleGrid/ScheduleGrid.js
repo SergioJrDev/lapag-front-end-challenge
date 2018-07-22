@@ -22,7 +22,7 @@ class ScheduleGrid extends Component {
   render() {
     const { hoursAvaliablePerDay } = this.state
     const { schedules, professional } = this.props
-    console.log('scheules schedulegrid', schedules)
+    // console.log('scheules schedulegrid', schedules)
     return(
       <div className="schedule_grid">
       <div className="schedule_grid_wrapper">
