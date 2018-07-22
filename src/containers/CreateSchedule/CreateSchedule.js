@@ -195,8 +195,12 @@ class CreateSchedule extends Component {
     const isValidForm = !this.validateForm()
   
     return(
-      <form>
-        <p className="input_wrapper">Agendamento para o dia: {formatedDate}</p>
+      <form className="create_schedule">
+        <p className="input_wrapper">
+          <label>
+          Agendamento para o dia: <span>{formatedDate}</span>
+          </label>
+        </p>
         <div className="input_wrapper">
           <label>Selecione um horário</label>
           <TimePicker

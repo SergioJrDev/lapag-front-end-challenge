@@ -7,12 +7,20 @@
   }
 }
 
-.services-options {
-  .input_wrapper {
-    display: flex;
-    align-items: center;
+.create_schedule {
+  .services-options {
+    .input_wrapper {
+      display: flex;
+      align-items: center;
+    }
+    label {
+      margin-right: 5px;
+    }
   }
-  label {
-    margin-right: 5px;
+  .input_wrapper {
+    span {
+      font-size: 25px;
+      color: #333;
+    }
   }
 }

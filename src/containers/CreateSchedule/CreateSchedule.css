@@ -2,9 +2,13 @@
   margin: auto;
   margin-bottom: 30px; }
 
-.services-options .input_wrapper {
+.create_schedule .services-options .input_wrapper {
   display: flex;
   align-items: center; }
 
-.services-options label {
+.create_schedule .services-options label {
   margin-right: 5px; }
+
+.create_schedule .input_wrapper span {
+  font-size: 25px;
+  color: #333; }
