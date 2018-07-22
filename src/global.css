@@ -34,7 +34,8 @@ p {
   bottom: 40px;
   background-color: #fff;
   margin: auto;
-  overflow: scroll; }
+  overflow: scroll;
+  max-width: 500px; }
 
 .Overlay {
   position: fixed;
