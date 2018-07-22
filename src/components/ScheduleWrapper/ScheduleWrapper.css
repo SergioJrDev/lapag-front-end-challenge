@@ -1,0 +1,8 @@
+.schedule_wrapper {
+  display: flex;
+  padding: 15px;
+  overflow: scroll;
+  width: 100%; }
+  @media screen and (min-width: 992px) {
+    .schedule_wrapper {
+      justify-content: center; } }

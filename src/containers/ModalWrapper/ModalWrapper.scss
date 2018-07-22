@@ -1,0 +1,17 @@
+.modal_wrapper {
+  .header {
+    text-align: center;
+    padding: 40px;
+    color: #fff;
+    position: relative;
+    margin-bottom: 30px;
+    button {
+      position: absolute;
+      left: 40px;
+      border: 2px solid;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+    }
+  }
+}

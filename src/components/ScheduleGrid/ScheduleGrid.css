@@ -1,0 +1,4 @@
+.schedule_grid_wrapper {
+  border-left: 1px solid #d8d8d8; }
+  .schedule_grid_wrapper:last-child {
+    border-right: 1px solid #d8d8d8; }

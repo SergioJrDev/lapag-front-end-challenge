@@ -15,6 +15,11 @@ $theme-colors: (
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+.theme-bg {
+  background: pick-color();
 }
 
 button {
@@ -30,9 +35,42 @@ button {
   &:disabled, &[disabled] {
     background: lighten($color: pick-color(), $amount: 20%)
   }
+  &.danger {
+    background: pick-color('danger');
+    &:hover {
+      background: darken($color: pick-color('danger'), $amount: 20%)
+    }
+  }
 }
 
 p {
   color: pick-color('text');
   line-height: 1.5;
+}
+
+.Modal {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  background-color: #fff;
+  margin: auto;
+  overflow: scroll;
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7411764705882353);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

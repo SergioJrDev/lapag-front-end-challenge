@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
-import { PageWrapper, SelectWithFilter, InputWrapper, Select, Button } from './../../components'
+import { SelectWithFilter, InputWrapper, Select, Button } from './../../components'
 import { transformResponseToSelectFormat } from './../../utils'
 import { returnClients, returnProfessionals, returnServicesByProfessional,
   returnClientById, returnProfessionalByDocument } from './../../mocks/apiMocks'
-import './CriarAgendamento.css'
+import { addNewSchedule, closeModal } from './../../actions'
+import './CreateSchedule.css'
 import TimePicker from 'react-times';
 import moment from 'moment';
 
 import 'react-times/css/material/default.css';
 import 'react-times/css/classic/default.css';
+import './react-select.css'
 
 const durationOptions = [
   {value: 30, label: '30 minutos'},
@@ -38,6 +40,7 @@ const stateDefault = {
     date: undefined,
   },
   model: {
+    _id: new Date().getTime(),
     date: undefined,
     client: {},
     professional: {},
@@ -47,21 +50,25 @@ const stateDefault = {
   }
 }
 
-class CriarAgendamento extends Component {
+class CreateSchedule extends Component {
   state = {
     ...stateDefault,
-    model: { ...stateDefault.model, date: this.props.scheduleDate.currentDate },
-    view: { ...stateDefault.view, date: this.props.scheduleDate.currentDate },
+    model: { ...stateDefault.model, date: this.props.dateToSchedule },
+    view: { ...stateDefault.view, date: this.props.dateToSchedule },
   }
 
-  componentDidMount = () => {
-    returnClients()
-      .then(response => transformResponseToSelectFormat(response, '_id', 'name'))
-      .then(clients => this.updateStateArray('view', clients, 'clients'))
+  componentDidMount = async () => {
+    try {
+      const clientResponse = await returnClients()
+      const clients = transformResponseToSelectFormat(clientResponse, '_id', 'name')
+      this.updateStateArray('view', clients, 'clients')
 
-    returnProfessionals()
-      .then(response => transformResponseToSelectFormat(response, 'document_number', 'name'))
-      .then(professionals =>  this.updateStateArray('view', professionals, 'professionals'))
+      const  professionalsResponse = await returnProfessionals()
+      const professionals = transformResponseToSelectFormat(professionalsResponse, 'document_number', 'name')
+      this.updateStateArray('view', professionals, 'professionals')
+    } catch(err) {
+      console.log('Error CreateSchedule.componentDidMount()', err)
+    }
   }
 
   // property: objeto principal no state
@@ -93,10 +100,14 @@ class CriarAgendamento extends Component {
     this.updateStateObject('selected', {value, label}, 'client', this.updateClientModel)
   }
 
-  updateClientModel = () => {
-    const { client: { value }} = this.state.selected
-    returnClientById(value)
-      .then(client => this.updateStateObject('model', {...client}, 'client'))
+  updateClientModel = async () => {
+    try {
+      const { client: { value }} = this.state.selected
+      const client = await returnClientById(value)
+      this.updateStateObject('model', {...client}, 'client')
+    } catch(err) {
+      console.log('Error CreateSchedule.updateClientModel()', err)
+    }
   }
 
   onFocusChange = (focused) => {
@@ -108,10 +119,14 @@ class CriarAgendamento extends Component {
     this.setState({model: { ...this.state.model, horary: `${hour}:${minute}` }})
   }
 
-  updateServiceList = () => {
-    const { professional: { value }} = this.state.selected
-    returnServicesByProfessional(value)
-      .then(services =>  this.updateStateArray('view', services, 'services', true, this.filterSelectedsServices))
+  updateServiceList = async () => {
+    try {
+      const { professional: { value }} = this.state.selected
+      const services = await returnServicesByProfessional(value)
+      this.updateStateArray('view', services, 'services', true, this.filterSelectedsServices)
+    } catch(err) {
+      console.log('Error CreateSchedule.updateServiceList()', err)
+    }
   }
 
   updateServiceListAndProfessionalSelected = () => {
@@ -119,10 +134,14 @@ class CriarAgendamento extends Component {
     this.updateProfessionalSelected()
   }
 
-  updateProfessionalSelected = () => {
-    const { professional: { value }} = this.state.selected
-    returnProfessionalByDocument(value)
-      .then(professional => this.updateStateObject('model', {...professional}, 'professional'))
+  updateProfessionalSelected = async () => {
+    try {
+      const { professional: { value }} = this.state.selected
+      const professional = await returnProfessionalByDocument(value)
+      this.updateStateObject('model', {...professional}, 'professional')
+    } catch(err) {
+      console.log('Error CreateSchedule.updateProfessionalSelected()', err)
+    }
   }
 
   onSelectProfessionalHandler = ({value, label}) => {
@@ -157,8 +176,12 @@ class CriarAgendamento extends Component {
   }
 
   onSubmitHandler = (event) => {
-    console.log(JSON.stringify(this.state.model, null, 2))
-    this.setState({...stateDefault})
+    const { model } = this.state
+    this.props.dispatch(addNewSchedule(model))
+    this.setState({...stateDefault}, () => {
+      this.props.updateSchedules && this.props.updateSchedules()
+      this.props.dispatch(closeModal())
+    })
     event.preventDefault()
     return false
   }
@@ -172,61 +195,65 @@ class CriarAgendamento extends Component {
     const isValidForm = !this.validateForm()
   
     return(
-      <PageWrapper>
-        <form>
-          <p>Agendamento para o dia: {formatedDate}</p>
-          <div className="input_wrapper">
-            <label>Selecione um horário</label>
-            <TimePicker
-              time={`${hour}:${minute}`}
-              colorPalette="dark"
-              onFocusChange={this.onFocusChange}
-              onTimeChange={this.onTimeChange} />
-          </div>
+      <form className="create_schedule">
+        <p className="input_wrapper">
+          <label>
+          Agendamento para o dia: <span>{formatedDate}</span>
+          </label>
+        </p>
+        <div className="input_wrapper">
+          <label>Selecione um horário</label>
+          <TimePicker
+            time={`${hour}:${minute}`}
+            colorPalette="dark"
+            onFocusChange={this.onFocusChange}
+            onTimeChange={this.onTimeChange} />
+        </div>
 
-          <InputWrapper label="Pesquise por um cliente" input={() =>
-            <SelectWithFilter
-              placeholder=""
-              selected={client}
-              onSelectHandler={this.onSelectClienteHandler}
-              options={clients} />
-          } />
+        <InputWrapper label="Pesquise por um cliente" input={() =>
+          <SelectWithFilter
+            placeholder=""
+            selected={client}
+            onSelectHandler={this.onSelectClienteHandler}
+            options={clients} />
+        } />
 
-          <InputWrapper label="Pesquise por um funcionário" input={() =>
-            <SelectWithFilter
-              placeholder=""
-              selected={professional}
-              onSelectHandler={this.onSelectProfessionalHandler}
-              options={professionals} />
-          } />
+        <InputWrapper label="Pesquise por um funcionário" input={() =>
+          <SelectWithFilter
+            placeholder=""
+            selected={professional}
+            onSelectHandler={this.onSelectProfessionalHandler}
+            options={professionals} />
+        } />
 
-          <div className="services-options">
-            {services.map((service, index) => (
-              <InputWrapper key={index} label={service.name} input={(props) =>
-                <input
-                name={props.name}
-                id={props.id}
-                checked={service.checked}
-                onChange={element => this.onSelectServiceHandler(element, index)}
-                value={service.name}
-                type="checkbox" />
-              } />
-            ))}
-          </div>
+        <div className="services-options">
+          {services.map((service, index) => (
+            <InputWrapper key={index} label={service.name} input={(props) =>
+              <input
+              name={props.name}
+              id={props.id}
+              checked={service.checked}
+              onChange={element => this.onSelectServiceHandler(element, index)}
+              value={service.name}
+              type="checkbox" />
+            } />
+          ))}
+        </div>
 
-          <InputWrapper label="Selecione a duração" input={() =>
-            <Select
-              placeholder=""
-              name="duration"
-              value={duration}
-              onSelectHandler={this.onSelectDurationHandler}
-              options={durationOptions} />
-          } />
+        <InputWrapper label="Selecione a duração" input={() =>
+          <Select
+            placeholder=""
+            name="duration"
+            value={duration}
+            onSelectHandler={this.onSelectDurationHandler}
+            options={durationOptions} />
+        } />
+        <div className="flex-center">
           <Button disabled={isValidForm} onClick={this.onSubmitHandler}>Salvar</Button>
-        </form>
-      </PageWrapper>
+        </div>
+      </form>
     )
   }
 }
 
-export default CriarAgendamento
+export default CreateSchedule

@@ -6,8 +6,9 @@ const Button = ({
   className = '',
   children,
   disabled,
+  style = {},
 }) => (
-  <button disabled={disabled} className={className} onClick={onClick}>{children}</button>
+  <button disabled={disabled} className={className} onClick={onClick} style={style}>{children}</button>
 )
 
 Button.propTypes = {

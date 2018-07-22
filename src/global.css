@@ -1,6 +1,10 @@
 * {
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  box-sizing: border-box; }
+
+.theme-bg {
+  background: #1EB1E8; }
 
 button {
   background: #1EB1E8;
@@ -13,7 +17,35 @@ button {
     background: #0f6e91; }
   button:disabled, button[disabled] {
     background: #7bd1f1; }
+  button.danger {
+    background: #FF7162; }
+    button.danger:hover {
+      background: #fb1800; }
 
 p {
   color: #333;
   line-height: 1.5; }
+
+.Modal {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  background-color: #fff;
+  margin: auto;
+  overflow: scroll; }
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.741176); }
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center; }

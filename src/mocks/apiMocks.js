@@ -1,4 +1,20 @@
+import Store from './../store'
 import { professionalMocks, servicesMocks, clientsMocks } from "./mocks";
+import moment from 'moment'
+
+export const getScheduleByDay = (date) => {
+  return new Promise((resolve, reject) => {
+    if(!date) reject('Informe uma data para filtrar os agendamento')
+    const dateFormatted = moment(date).format('DD/MM/YYYY')
+    const { schedules = []}  = Store.getState()
+    const scheduledFiltered = schedules.filter(schedule => {
+      const scheduleDateFormatted = moment(schedule.date).format('DD/MM/YYYY')
+      return scheduleDateFormatted === dateFormatted
+    })
+    return resolve(scheduledFiltered)
+  })
+}
+
 
 export const returnProfessionals = () =>
   new Promise((resolve, reject) => {
