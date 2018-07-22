@@ -58,13 +58,17 @@ class CreateSchedule extends Component {
   }
 
   componentDidMount = async () => {
-   const clientResponse = await returnClients()
-   const clients = transformResponseToSelectFormat(clientResponse, '_id', 'name')
-   this.updateStateArray('view', clients, 'clients')
+    try {
+      const clientResponse = await returnClients()
+      const clients = transformResponseToSelectFormat(clientResponse, '_id', 'name')
+      this.updateStateArray('view', clients, 'clients')
 
-   const  professionalsResponse = await returnProfessionals()
-   const professionals = transformResponseToSelectFormat(professionalsResponse, 'document_number', 'name')
-   this.updateStateArray('view', professionals, 'professionals')
+      const  professionalsResponse = await returnProfessionals()
+      const professionals = transformResponseToSelectFormat(professionalsResponse, 'document_number', 'name')
+      this.updateStateArray('view', professionals, 'professionals')
+    } catch(err) {
+      console.log('Error CreateSchedule.componentDidMount()', err)
+    }
   }
 
   // property: objeto principal no state
@@ -97,9 +101,13 @@ class CreateSchedule extends Component {
   }
 
   updateClientModel = async () => {
-    const { client: { value }} = this.state.selected
-    const client = await returnClientById(value)
-    this.updateStateObject('model', {...client}, 'client')
+    try {
+      const { client: { value }} = this.state.selected
+      const client = await returnClientById(value)
+      this.updateStateObject('model', {...client}, 'client')
+    } catch(err) {
+      console.log('Error CreateSchedule.updateClientModel()', err)
+    }
   }
 
   onFocusChange = (focused) => {
@@ -112,9 +120,13 @@ class CreateSchedule extends Component {
   }
 
   updateServiceList = async () => {
-    const { professional: { value }} = this.state.selected
-    const services = await returnServicesByProfessional(value)
-    this.updateStateArray('view', services, 'services', true, this.filterSelectedsServices)
+    try {
+      const { professional: { value }} = this.state.selected
+      const services = await returnServicesByProfessional(value)
+      this.updateStateArray('view', services, 'services', true, this.filterSelectedsServices)
+    } catch(err) {
+      console.log('Error CreateSchedule.updateServiceList()', err)
+    }
   }
 
   updateServiceListAndProfessionalSelected = () => {
@@ -123,9 +135,13 @@ class CreateSchedule extends Component {
   }
 
   updateProfessionalSelected = async () => {
-    const { professional: { value }} = this.state.selected
-    const professional = await returnProfessionalByDocument(value)
-    this.updateStateObject('model', {...professional}, 'professional')
+    try {
+      const { professional: { value }} = this.state.selected
+      const professional = await returnProfessionalByDocument(value)
+      this.updateStateObject('model', {...professional}, 'professional')
+    } catch(err) {
+      console.log('Error CreateSchedule.updateProfessionalSelected()', err)
+    }
   }
 
   onSelectProfessionalHandler = ({value, label}) => {
