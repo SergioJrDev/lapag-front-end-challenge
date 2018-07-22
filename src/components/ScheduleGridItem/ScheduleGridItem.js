@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ScheduleItemDetails } from './../'
+import { ScheduleItemDetails } from './../../containers'
 import './ScheduleGridItem.css'
 
 const hasScheduleThatDay = ({hour, schedules, professional}) => {
