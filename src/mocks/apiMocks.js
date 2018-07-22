@@ -1,7 +1,6 @@
 import Store from './../store'
 import { professionalMocks, servicesMocks, clientsMocks } from "./mocks";
 import moment from 'moment'
-// console.log('Store mock', Store.getState())
 
 export const getScheduleByDay = (date) => {
   return new Promise((resolve, reject) => {
@@ -12,7 +11,6 @@ export const getScheduleByDay = (date) => {
       const scheduleDateFormatted = moment(schedule.date).format('DD/MM/YYYY')
       return scheduleDateFormatted === dateFormatted
     })
-    console.log('filtered', scheduledFiltered)
     return resolve(scheduledFiltered)
   })
 }

@@ -3,7 +3,7 @@ import { SelectWithFilter, InputWrapper, Select, Button } from './../../componen
 import { transformResponseToSelectFormat } from './../../utils'
 import { returnClients, returnProfessionals, returnServicesByProfessional,
   returnClientById, returnProfessionalByDocument } from './../../mocks/apiMocks'
-import { addNewSchedule } from './../../actions'
+import { addNewSchedule, closeModal } from './../../actions'
 import './CreateSchedule.css'
 import TimePicker from 'react-times';
 import moment from 'moment';
@@ -177,15 +177,16 @@ class CreateSchedule extends Component {
 
   onSubmitHandler = (event) => {
     const { model } = this.state
-    console.log(JSON.stringify(model, null, 2))
     this.props.dispatch(addNewSchedule(model))
-    this.setState({...stateDefault})
+    this.setState({...stateDefault}, () => {
+      this.props.updateSchedules && this.props.updateSchedules()
+      this.props.dispatch(closeModal())
+    })
     event.preventDefault()
     return false
   }
 
   render() {
-    console.log(this.props.dateToSchedule)
     const { view, selected } = this.state
     const { professionals, clients, horary, services, duration, date } = view
     const { client, professional } = selected

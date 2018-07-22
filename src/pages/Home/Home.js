@@ -5,7 +5,9 @@ import { updateCurrentScheduleDate, updateContentModal, openModal } from './../.
 import { transformDateToDayOfWeek } from './../../utils'
 import { returnProfessionals, getScheduleByDay } from './../../mocks/apiMocks'
 import { get as _get } from 'lodash'
+import Store from './../../store'
 
+let unsubscribe
 class Home extends Component {
   constructor(props) {
     super(props)
@@ -16,6 +18,7 @@ class Home extends Component {
 
   componentDidMount = async () => {
     try {
+      unsubscribe = Store.subscribe(this.updateScheduleView)
       const { scheduleDate: { currentDate }} = this.props
       const schedules = await getScheduleByDay(currentDate)
       const allProfessionals = await returnProfessionals()
@@ -24,8 +27,12 @@ class Home extends Component {
         schedules,
       })
     } catch(err) {
-      console.log('err', err)
+      console.log('Error home.componentDidMount()', err)
     }
+  }
+
+  componentWillUnmount = () => {
+    unsubscribe()
   }
 
   componentDidUpdate = async (prevProps) => {
@@ -33,14 +40,20 @@ class Home extends Component {
       const prevDate = _get(prevProps, 'scheduleDate')
       const nowDate = _get(this.props, 'scheduleDate')
       if(prevDate !== nowDate) {
-        const schedules = await getScheduleByDay(nowDate.currentDate)
-        console.log('updated schedule', schedules.length)
-        this.setState({
-          schedules
-        })
+        this.updateScheduleView()
       }
     } catch(err) {
-      console.log('err', err)
+      console.log('Error Home.componentDidUpdate()', err)
+    }
+  }
+
+  updateScheduleView = async () => {
+    try {
+      const currentDate = _get(this, 'props.scheduleDate.currentDate')
+      const schedules = await getScheduleByDay(currentDate)
+      this.setState({schedules})
+    }catch(err) {
+      console.log('Error Home.updateScheduleView()', err)
     }
   }
 
@@ -49,7 +62,9 @@ class Home extends Component {
     const modalContent = () =>
     <ModalWrapper
       title="Criar agendamento">
-      <CreateSchedule dateToSchedule={scheduleDate} />
+      <CreateSchedule
+        updateSchedules={this.updateScheduleView}
+        dateToSchedule={new Date(scheduleDate)} />
     </ModalWrapper>
     this.props.dispatch(updateContentModal(modalContent))
     this.props.dispatch(openModal())
@@ -63,7 +78,7 @@ class Home extends Component {
     const { allProfessionals, schedules } = this.state
     const { scheduleDate } = this.props
     const { currentDate } = scheduleDate
-    // console.log('schedule render', schedules)
+
     return(
       <PageWrapper>
         <div>
