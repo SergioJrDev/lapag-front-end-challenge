@@ -10,6 +10,7 @@ import moment from 'moment';
 
 import 'react-times/css/material/default.css';
 import 'react-times/css/classic/default.css';
+import './react-select.css'
 
 const durationOptions = [
   {value: 30, label: '30 minutos'},
@@ -52,8 +53,8 @@ const stateDefault = {
 class CreateSchedule extends Component {
   state = {
     ...stateDefault,
-    model: { ...stateDefault.model, date: this.props.scheduleDate.currentDate },
-    view: { ...stateDefault.view, date: this.props.scheduleDate.currentDate },
+    model: { ...stateDefault.model, date: this.props.dateToSchedule },
+    view: { ...stateDefault.view, date: this.props.dateToSchedule },
   }
 
   componentDidMount = async () => {
@@ -168,6 +169,7 @@ class CreateSchedule extends Component {
   }
 
   render() {
+    console.log(this.props.dateToSchedule)
     const { view, selected } = this.state
     const { professionals, clients, horary, services, duration, date } = view
     const { client, professional } = selected

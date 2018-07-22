@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { DatePicker, ScheduleWrapper, Button } from './../../components'
 import { PageWrapper, ModalWrapper, CreateSchedule } from './../../containers'
-import { updateCurrentScheduleDate, updateContentModal, openModal, addNewSchedule } from './../../actions'
+import { updateCurrentScheduleDate, updateContentModal, openModal } from './../../actions'
 import { transformDateToDayOfWeek } from './../../utils'
-import { returnProfessionals } from './../../mocks/apiMocks'
+import { returnProfessionals, getScheduleByDay } from './../../mocks/apiMocks'
+import { get as _get } from 'lodash'
 
 class Home extends Component {
   constructor(props) {
@@ -14,60 +15,41 @@ class Home extends Component {
   }
 
   componentDidMount = async () => {
-    const allProfessionals = await returnProfessionals()
-    this.setState({
-      allProfessionals,
-    })
+    try {
+      const { scheduleDate: { currentDate }} = this.props
+      const schedules = await getScheduleByDay(currentDate)
+      const allProfessionals = await returnProfessionals()
+      this.setState({
+        allProfessionals,
+        schedules,
+      })
+    } catch(err) {
+      console.log('err', err)
+    }
+  }
 
-    setTimeout(() => {
-      this.props.dispatch(addNewSchedule(
-        {
-          "_id": "75676",
-          date: '2018-07-21T13:19:31.221Z',
-          client: {
-            _id: 'mt5mSb5oukK6Bu3Yh',
-            name: 'Marcelito'
-          },
-          professional: {
-            _id: '4b6BEEvCCH8zAGSyY',
-            name: 'Ana Claudia Silveira',
-            nickname: 'Ana',
-            document_number: '11158031076'
-          },
-          services: [
-            {
-              _id: 'SDnJhi87Jznjhowd7',
-              name: 'Manicure',
-              duration: '60',
-              available_professionals: [
-                {
-                  commission: '50',
-                  cpf: '11158031076'
-                },
-                {
-                  commission: '50',
-                  cpf: '82053478837'
-                },
-                {
-                  cpf: '45810281820',
-                  commission: '42.5'
-                }
-              ],
-              checked: true
-            }
-          ],
-          duration: '45',
-          horary: '13:05'
-        }
-      ))
-    }, 2000)
+  componentDidUpdate = async (prevProps) => {
+    try {
+      const prevDate = _get(prevProps, 'scheduleDate')
+      const nowDate = _get(this.props, 'scheduleDate')
+      if(prevDate !== nowDate) {
+        const schedules = await getScheduleByDay(nowDate.currentDate)
+        console.log('updated schedule', schedules.length)
+        this.setState({
+          schedules
+        })
+      }
+    } catch(err) {
+      console.log('err', err)
+    }
   }
 
   onOpenModalHandler = () => {
+    const scheduleDate = _get(this, 'props.scheduleDate.currentDate')
     const modalContent = () =>
     <ModalWrapper
       title="Criar agendamento">
-      <CreateSchedule />
+      <CreateSchedule dateToSchedule={scheduleDate} />
     </ModalWrapper>
     this.props.dispatch(updateContentModal(modalContent))
     this.props.dispatch(openModal())
@@ -78,10 +60,10 @@ class Home extends Component {
   }
 
   render() {
-    const { allProfessionals } = this.state
-    const { schedules, scheduleDate } = this.props
+    const { allProfessionals, schedules } = this.state
+    const { scheduleDate } = this.props
     const { currentDate } = scheduleDate
-    // console.log('scheules home', schedules)
+    // console.log('schedule render', schedules)
     return(
       <PageWrapper>
         <div>

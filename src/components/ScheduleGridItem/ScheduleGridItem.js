@@ -14,10 +14,12 @@ class ScheduleGridItem extends Component {
 
   render() {
     const hasSchedule = hasScheduleThatDay(this.props) 
+    const { hour } = this.props
     return(
       <div className="schedule_grid_item">
-        {hasSchedule.length > 0 &&
-          <ScheduleItemDetails {...hasSchedule[0]} />}
+        {hasSchedule.length > 0
+          ? <ScheduleItemDetails {...hasSchedule[0]} />
+          : <div className="flex-center"><span>{hour}h</span></div>}
       </div>
     )
   }
