@@ -5,20 +5,12 @@ import { updateCurrentScheduleDate, updateContentModal, openModal } from './../.
 import { transformDateToDayOfWeek } from './../../utils'
 import { returnProfessionals, getScheduleByDay } from './../../mocks/apiMocks'
 import { get as _get } from 'lodash'
-import Store from './../../store'
 
-let unsubscribe
+
 class Home extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      allProfessionals: [],
-    }
-  }
 
   componentDidMount = async () => {
     try {
-      unsubscribe = Store.subscribe(this.updateScheduleView)
       const { scheduleDate: { currentDate }} = this.props
       const schedules = await getScheduleByDay(currentDate)
       const allProfessionals = await returnProfessionals()
@@ -31,15 +23,13 @@ class Home extends Component {
     }
   }
 
-  componentWillUnmount = () => {
-    unsubscribe()
-  }
-
   componentDidUpdate = async (prevProps) => {
     try {
       const prevDate = _get(prevProps, 'scheduleDate')
-      const nowDate = _get(this.props, 'scheduleDate')
-      if(prevDate !== nowDate) {
+      const prevSchedules = _get(prevProps, 'schedules')
+      const newDate = _get(this, 'props.scheduleDate')
+      const newSchedules = _get(this, 'props.schedules')
+      if(prevDate !== newDate || prevSchedules !== newSchedules) {
         this.updateScheduleView()
       }
     } catch(err) {
@@ -75,7 +65,8 @@ class Home extends Component {
   }
 
   render() {
-    const { allProfessionals, schedules } = this.state
+    const allProfessionals = _get(this, 'state.allProfessionals', [])
+    const schedules = _get(this, 'state.schedules', [])
     const { scheduleDate } = this.props
     const { currentDate } = scheduleDate
 
